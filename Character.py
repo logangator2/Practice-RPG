@@ -56,7 +56,7 @@ class Character:
                 if value >= self.health * 2:
                     return self.death()
                 else:
-                    return self.knockout()
+                    return self.knockout() # FIXME: unable to call character method
             else:
                 self.c_health = self.c_health - value
         else:
@@ -133,8 +133,14 @@ class Character:
         Args:
             other: another character whom is attacked
         Effects:
-            Other character has their temporary health decreased by a random amount from 1 to 10
+            Other character has their current health decreased by a random amount from 1 to 10
         """
+        crit_chance = random.randint(1, 20)
+        if (crit_chance == 20):
+            other.damage(20) # FIXME: may want to change based on diff weapons/armor, etc.
+            print("{} did {} damage to {}".format(self.name, 20, other.name))
+            return
+
         if self.c_health == 0:
             print("{} cannot attack.".format(self.name))
         else:
