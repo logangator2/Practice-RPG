@@ -10,9 +10,9 @@ class Character:
             name: str name for the character
             health: integer value for maximum health
             c_health: integer value for current health
+            player_c: boolean value for whether character is a player character or not
             dead: whether or not the current character is dead
             knockout: whether or not the current character is knocked out
-
         """
         self.name = name
         self.health = health
@@ -138,7 +138,7 @@ class Character:
         crit_chance = random.randint(1, 20)
         if (crit_chance == 20):
             other.damage(20) # FIXME: may want to change based on diff weapons/armor, etc.
-            print("{} did {} damage to {}".format(self.name, 20, other.name))
+            print("A critical hit! {} did {} damage to {}".format(self.name, 20, other.name))
             return
 
         if self.c_health == 0:
