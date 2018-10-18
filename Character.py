@@ -56,11 +56,12 @@ class Character:
                 if value >= self.health * 2:
                     return self.death()
                 else:
-                    return self.knockout() # FIXME: unable to call character method
+                    return self.ko()
             else:
                 self.c_health = self.c_health - value
         else:
             self.defend = False
+            print("{}'s defenses were lowered!".format(self.name))
         return
 
     def healing(self, value):
@@ -75,26 +76,31 @@ class Character:
             if value >= self.health:
                 self.knockout = False
                 self.c_health = self.health
-                return "{} was healed to full health.".format(self.name)
+                print("{} was healed to full health.".format(self.name))
+                return
             else:
                 if self.c_health + value >= self.health:
                     self.knockout = False
                     self.c_health = self.health
-                    return "{} was healed to full health.".format(self.name)
+                    print("{} was healed to full health.".format(self.name))
+                    return
                 else:
                     self.c_health = self.c_health + value
                     self.knockout = False
-                    return "{} was healed by {} points.".format(self.name, self.value)
+                    print("{} was healed by {} points.".format(self.name, self.value))
+                    return
         else:
-            return "{} has died and cannot be healed!".format(self.name)
+            print("{} has died and cannot be healed!".format(self.name))
+            return
 
-    def knockout(self):
+    def ko(self):
         """
         Handles if a character's current health drops to 0.
         """
         self.c_health = 0
         self.knockout = True
-        return "{} has been knocked out!".format(self.name)
+        print("{} has been knocked out!".format(self.name))
+        return
 
     def death(self):
         """
@@ -103,7 +109,8 @@ class Character:
         """
         self.c_health = 0
         self.dead = True
-        return "{} died!".format(self.name)
+        print("{} died!".format(self.name))
+        return
 
     def dead(self):
         return self.dead
@@ -122,9 +129,11 @@ class Character:
             else:
                 self.c_health = value
             self.dead = False
-            return "{} was revived!".format(self.name)
+            print("{} was revived for {} health!".format(self.name, value))
+            return
         else:
-            return "ERROR REVIVING {}".format(self.name)
+            print("Revival of {} failed!".format(self.name))
+            return
 
     def normal_attack(self, other):
         """

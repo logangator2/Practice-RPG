@@ -26,5 +26,6 @@ class Enemy(Character.Character):
                 self.c_health = self.c_health - value
         else:
             self.defend = False
+            print("{}'s defenses were lowered!".format(self.name))
         return
 
