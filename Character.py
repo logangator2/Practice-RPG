@@ -19,7 +19,7 @@ class Character:
         self.c_health = health
         self.dead = False
         self.knockout = False
-        self.defend = False
+        self.defending = False
         #self.speed = speed
 
         #self.item1 = None
@@ -51,7 +51,7 @@ class Character:
         Args:
             value: amount of damage dealt to character
         """
-        if self.defend == False:
+        if self.defending == False:
             if value >= self.c_health:
                 if value >= self.health * 2:
                     return self.death()
@@ -60,7 +60,7 @@ class Character:
             else:
                 self.c_health = self.c_health - value
         else:
-            self.defend = False
+            self.defending = False
             print("{}'s defenses were lowered!".format(self.name))
         return
 
@@ -146,23 +146,24 @@ class Character:
         """
         crit_chance = random.randint(1, 20)
         if (crit_chance == 20):
-            other.damage(20) # FIXME: may want to change based on diff weapons/armor, etc.
             print("A critical hit! {} did {} damage to {}".format(self.name, 20, other.name))
+            other.damage(20) # FIXME: may want to change based on diff weapons/armor, etc.
             return
 
         if self.c_health == 0:
             print("{} cannot attack.".format(self.name))
         else:
             dmg = random.randint(1, 10)
-            other.damage(dmg)
             print("{} did {} damage to {}".format(self.name, dmg, other.name))
+            other.damage(dmg)
         return
 
     def defend(self):
         """
         The current character defends against a single damaging attack
         """
-        self.defend = True
+        print("{} is defending!".format(self.name))
+        self.defending = True
         return
 
 

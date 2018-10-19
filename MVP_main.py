@@ -30,31 +30,44 @@ def command_checker(command, player, enemy_list):
         0: If the player chose to quit, it quits the program
         1: If the player chose to display help, quit, or entered an invalid command, the game continues
         2: If all enemies have been defeated, sends 'all enemies defeated' signal to main
+        3: If player's action was completely valid and not help or quit
     """
     if len(enemy_list) == 0:
         return 2
 
-    if (command == "Help") or (command == "help"):
-        print("You may enter in any of these commands: fight, quit") # FIXME: Update when more features added
+    if (command == "help"):
+        print("You may enter in any of these commands: fight, defend, or quit") # FIXME: Update as necessary
+        print("You may use the first letter of each command instead.")
         return 1
 
-    elif (command == "Fight") or (command == "fight") or (command == "f"):
-        for e in enemy_list:
-            print("{},".format(e.name), "HP = {}".format(e.c_health))
+    # secret testing function
+    if (command == "ult"):
+        player.c_health = 500
+        return 1
+
+    if (command == "defend") or (command == "d"): # FIXME: if player chooses this, enemies get defenses
+        print()
+        player.defend()
+        print()
+        return 3
+
+    elif (command == "fight") or (command == "f"):
         target = input("Which enemy would you like to attack? ")
 
         # check for valid target
         for e in enemy_list:
-            if e.name == target:
+            if e.name.lower() == target.lower():
+                print()
                 player.normal_attack(e)
+                print()
                 if e.dead:
                     enemy_list.remove(e)
-                return 1
+                return 3
 
         print("Invalid target! Try again.")
         return 1
 
-    elif (command == "Quit") or (command == "quit") or (command == "q"): # FIXME: Once Overworld is added, change quit to 'run' 
+    elif (command == "quit") or (command == "q"): # FIXME: Once Overworld is added, add 'run' option
         return 0
 
     else:
@@ -84,12 +97,15 @@ def main():
     # main game while loop
     while check != 0:
         # check if all enemies have been defeated
-        if check == 2:
-            print("All enemies have been defeated.")
+        if len(enemy_list) == 0:
+            print("You win! All enemies have been defeated.")
             break
+
+        for e in enemy_list:
+            print("{},".format(e.name), "HP = {}".format(e.c_health))
         # request user input
         p_in = input("What would you like to do? ")
-        check = command_checker(p_in, player, enemy_list)
+        check = command_checker(p_in.lower(), player, enemy_list)
 
         # test of Character methods
         """
@@ -97,11 +113,19 @@ def main():
         player.healing(20)
 
         player.damage(40)
-        player.healing(20) # should fail
+        player.healing(20) # should fail to heal
         player.revive(20)
         """
 
-        # have enemies attack
+        # have enemies attack if player entered in valid input
+        if check == 3:
+            for e in enemy_list:
+                e.normal_attack(player) # FIXME: will want to change to random move with diff enemies
+                if player.knockout:
+                    print("You blacked out!") # FIXME: change to 'your team' later on
+                    return
+                else:
+                    print("{} has {} health. \n".format(player.name, player.c_health))
 
     return
 
