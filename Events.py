@@ -1,24 +1,9 @@
 
+import random
 import Character
 import Enemy
-import random
 
-def slime_generator():
-    """
-    Generates a random number of slime enemies
-    # NOTE: intended to scale to generating more types of enemies
-    Returns:
-        enemy_list: a list of enemy slimes
-    """
-    enemy_list = []
-    n_slimes = random.randint(1, 5)
-
-    for n in range(n_slimes):
-        slime = Enemy.Enemy("Slime {}".format(n + 1), 10)
-        enemy_list.append(slime)
-    return enemy_list
-
-def command_checker(command, player, enemy_list):
+def battle_command_checker(command, player, enemy_list):
     """
     Checks that player input is valid and executes command if so.
     Args:
@@ -36,7 +21,7 @@ def command_checker(command, player, enemy_list):
         return 2
 
     if (command == "help"):
-        print("You may enter in any of these commands: fight, defend, or quit") # FIXME: Update as necessary
+        print("You may enter in any of these commands: fight, defend, or run") # FIXME: Update as necessary
         print("You may use the first letter of each command instead.")
         return 1
 
@@ -67,27 +52,35 @@ def command_checker(command, player, enemy_list):
         print("Invalid target! Try again.")
         return 1
 
-    elif (command == "quit") or (command == "q"): # FIXME: Once Overworld is added, add 'run' option
+    elif (command == "run") or (command == "r"): # FIXME: Once Overworld is added, add 'run' option
+        print("You run!")
         return 0
 
     else:
         print("Invalid command! Please retry.")
         return 1
 
-def main():
+def slime_generator():
+    """
+    Generates a random number of slime enemies
+    # NOTE: intended to scale to generating more types of enemies
+    Returns:
+        enemy_list: a list of enemy slimes
+    """
+    enemy_list = []
+    n_slimes = random.randint(1, 5)
+
+    for n in range(n_slimes):
+        slime = Enemy.Enemy("Slime {}".format(n + 1), 10)
+        enemy_list.append(slime)
+    return enemy_list        
+
+def slime_event(player):
+
     check = 1
-    still_enemies = True
+    # DELETE?: still_enemies = True
     enemy_list = slime_generator() # generate slime enemies
     n_enemies = len(enemy_list)
-
-    # create player character
-    p_name = input("Enter your name: ")
-    player = Character.Character(p_name, 20)
-
-    # opening messages
-    print()
-    print("Welcome, {}. You have {} health. Type 'Help' for commands.".format(player.name, player.c_health))
-    print()
 
     if n_enemies == 1:
         print("Oh no! A slime has appeared!")
@@ -105,17 +98,7 @@ def main():
             print("{},".format(e.name), "HP = {}".format(e.c_health))
         # request user input
         p_in = input("What would you like to do? ")
-        check = command_checker(p_in.lower(), player, enemy_list)
-
-        # test of Character methods
-        """
-        player.damage(21)
-        player.healing(20)
-
-        player.damage(40)
-        player.healing(20) # should fail to heal
-        player.revive(20)
-        """
+        check = battle_command_checker(p_in.lower(), player, enemy_list)
 
         # have enemies attack if player entered in valid input
         if check == 3:
@@ -126,9 +109,4 @@ def main():
                     return
                 else:
                     print("{} has {} health. \n".format(player.name, player.c_health))
-
     return
-
-
-if __name__ == '__main__':
-    main()
