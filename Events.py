@@ -20,17 +20,17 @@ def battle_command_checker(command, player, enemy_list):
     if len(enemy_list) == 0:
         return 2
 
-    if (command == "help"):
+    elif (command == "help") or (command == "h"):
         print("You may enter in any of these commands: fight, defend, or run") # FIXME: Update as necessary
         print("You may use the first letter of each command instead.")
         return 1
 
     # secret testing function
-    if (command == "ult"):
+    elif (command == "ult"):
         player.c_health = 500
         return 1
 
-    if (command == "defend") or (command == "d"):
+    elif (command == "defend") or (command == "d"):
         print()
         player.defend()
         print()
@@ -78,7 +78,6 @@ def slime_generator():
 def slime_event(player):
 
     check = 1
-    # DELETE?: still_enemies = True
     enemy_list = slime_generator() # generate slime enemies
     n_enemies = len(enemy_list)
 
