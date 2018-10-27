@@ -1,7 +1,6 @@
 
 import random
 import Character
-import Enemy
 
 def battle_command_checker(command, player, enemy_list):
     """
@@ -71,7 +70,7 @@ def slime_generator():
     n_slimes = random.randint(1, 5)
 
     for n in range(n_slimes):
-        slime = Enemy.Enemy("Slime {}".format(n + 1), 10)
+        slime = Character.Enemy("Slime {}".format(n + 1), 10)
         enemy_list.append(slime)
     return enemy_list        
 

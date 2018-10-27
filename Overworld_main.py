@@ -2,7 +2,6 @@
 import random
 
 import Character
-import Enemy
 import Events
 
 def main():
@@ -41,6 +40,8 @@ def main():
             elif(command == "quit") or (command == "q"):
                 check = False
                 break
+            else:
+                print("\nInvalid command! Please retry.")
 
 
 if __name__ == '__main__':
