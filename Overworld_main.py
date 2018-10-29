@@ -11,6 +11,7 @@ def main():
     # create player character
     p_name = input("Enter your name: ")
     player = Character.Character(p_name, 20)
+    player_team = [player]
 
     # opening message
     print("\nWelcome, {}. You have {} health.".format(player.name, player.c_health))
@@ -18,9 +19,20 @@ def main():
     event_counter = 0
 
     while (check):
+        # check if enough events have occurred
         if event_counter == 10:
             check = False
             break
+        # check if players are still alive
+        all_dead = True
+        for p in player_team:
+            if p.dead != True:
+                all_dead = False
+        if all_dead:
+            print("\nYour adventure is over.\n")
+            check = False
+            break
+        # continue adventure
         else:
             print("\nYou are walking along a road.\n")
             # ask for player input
@@ -33,8 +45,8 @@ def main():
             # trigger event
             elif (command == "move") or (command == "m"):
                 print("\nYou move along the road.")
-                # FIXME: Make more than one event - maybe an event picker
-                Events.slime_event(player)
+                #Events.event_picker(player_team)
+                Events.event_picker(player_team)
                 event_counter += 1
             # quit game
             elif(command == "quit") or (command == "q"):
@@ -42,6 +54,7 @@ def main():
                 break
             else:
                 print("\nInvalid command! Please retry.")
+    return
 
 
 if __name__ == '__main__':

@@ -2,6 +2,46 @@
 import random
 import Character
 
+def battle(player_team, enemy_list):
+    """
+    
+    """
+    check = 1
+    n_enemies = len(enemy_list)
+
+    if n_enemies == 1:
+        print("Oh no! {} has appeared!".format(enemy_list[0].name))
+    else:
+        print("Oh no! Enemies have appeared!")
+
+    # main game while loop
+    while check != 0:
+        # check if all enemies have been defeated
+        if len(enemy_list) == 0:
+            print("You win! All enemies have been defeated.")
+            break
+
+        for e in enemy_list:
+            print("{},".format(e.name), "HP = {}".format(e.c_health))
+        # request user input
+        for p in player_team:
+            p_in = input("What would you like {} to do? ".format(p.name))
+            check = battle_command_checker(p_in.lower(), p, enemy_list)
+
+        # FIXME: All code below this comment needs to be changed when you actually start having multiple people on a team
+        tmp_player = player_team[0]
+
+        # have enemies attack if player entered in valid input
+        if check == 3:
+            for e in enemy_list:
+                e.normal_attack(tmp_player) # FIXME: will want to change to random move with diff enemies
+                if tmp_player.knockout:
+                    print("You blacked out!") # FIXME: change to 'your team' later on
+                    return
+                else:
+                    print("{} has {} health. \n".format(tmp_player.name, tmp_player.c_health))
+    return
+
 def battle_command_checker(command, player, enemy_list):
     """
     Checks that player input is valid and executes command if so.
@@ -74,37 +114,70 @@ def slime_generator():
         enemy_list.append(slime)
     return enemy_list        
 
-def slime_event(player):
+def event_picker(player_team):
+    """
+    Randomly picks an event 
+    Args:
+        player_team: list of player Character objects
+    Effects:
+        calls one of n events
+    """
 
-    check = 1
-    enemy_list = slime_generator() # generate slime enemies
-    n_enemies = len(enemy_list)
+    # FIXME: May want to just return a randomized selection of events so events aren't repeated
 
-    if n_enemies == 1:
-        print("Oh no! A slime has appeared!")
-    else:
-        print("Oh no! {} slimes have invaded!".format(n_enemies))
+    rn = random.randint(1, 5)
 
-    # main game while loop
-    while check != 0:
-        # check if all enemies have been defeated
-        if len(enemy_list) == 0:
-            print("You win! All enemies have been defeated.")
+    if rn == 1:
+        slime_event(player_team)
+    elif rn == 2:
+        baby_event(player_team)
+    elif rn == 3:
+        print("\nYou have stumbled into an unforgiving god's terrain.\n")
+        for p in player_team:
+            p.death()
+    elif rn == 4:
+        print("\n{} has fallen in a hole.\n".format(player_team[0]))
+        player_team[0].damage(5)
+    elif rn == 5:
+        print("\nYou have a pleasant stroll along the road. The road is quiet")
+
+        # gain an ally
+        # arrive in a town
+        # goblins attack
+        # bandits
+        # find chest w/ items
+        # two groups are fighting and you have to choose between the two
+        # troll asks you a riddle and if you don't know the answer you fight
+
+def baby_event(player_team):
+    """
+    Runs the baby animal event
+    Args:
+        player_team: list of player Character objs
+    """
+    enemy_list = []
+    check = True
+    while (check):
+        answer = (input("\nYou see a hurt baby animal on the road. Will you try and help it? Y/N ")).lower()
+        if (answer == "yes") or (answer == "y"):
+            print("\nThe animal was crying for its mother! The beast appears to defend its young.")
+            enemy_list.append(Character.Enemy("Momma Bear", 20))
+            battle(player_team, enemy_list)
+        elif (answer == "no") or (answer == "n"):
+            print("\nYou leave the animal to die. You're a terrible person.")
+            check = False
             break
+        else:
+            print("\nInvalid command! Try again.")
+    return
 
-        for e in enemy_list:
-            print("{},".format(e.name), "HP = {}".format(e.c_health))
-        # request user input
-        p_in = input("What would you like to do? ")
-        check = battle_command_checker(p_in.lower(), player, enemy_list)
+def slime_event(player_team):
+    """
+    Runs slime event
+    Args:
+        player_team: list of player Character objects
+    """
 
-        # have enemies attack if player entered in valid input
-        if check == 3:
-            for e in enemy_list:
-                e.normal_attack(player) # FIXME: will want to change to random move with diff enemies
-                if player.knockout:
-                    print("You blacked out!") # FIXME: change to 'your team' later on
-                    return
-                else:
-                    print("{} has {} health. \n".format(player.name, player.c_health))
+    enemy_list = slime_generator() # generate slime enemies
+    battle(player_team, enemy_list)
     return

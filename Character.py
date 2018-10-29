@@ -59,6 +59,7 @@ class Character:
                     return self.ko()
             else:
                 self.c_health = self.c_health - value
+                print("{} took {} damage!".format(self.name, value))
         else:
             self.defending = False
             print("{}'s defenses were lowered!".format(self.name))
