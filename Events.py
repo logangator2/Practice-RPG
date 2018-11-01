@@ -4,7 +4,9 @@ import Character
 
 def battle(player_team, enemy_list):
     """
-    
+    Runs main battle simulation for any encounter. 
+    Effects:
+        Stats for characters change depending on outcome of battle.
     """
     check = 1
     n_enemies = len(enemy_list)
@@ -14,29 +16,31 @@ def battle(player_team, enemy_list):
     else:
         print("Oh no! Enemies have appeared!")
 
-    # main game while loop
+    # main battle while loop
     while check != 0:
         # check if all enemies have been defeated
         if len(enemy_list) == 0:
             print("You win! All enemies have been defeated.")
             break
 
+        # display enemies
         for e in enemy_list:
             print("{},".format(e.name), "HP = {}".format(e.c_health))
+            
         # request user input
         for p in player_team:
             p_in = input("What would you like {} to do? ".format(p.name))
             check = battle_command_checker(p_in.lower(), p, enemy_list)
 
-        # FIXME: All code below this comment needs to be changed when you actually start having multiple people on a team
+        # FIXME: All code in this function below this comment needs to be changed when there len(player_team) > 1
         tmp_player = player_team[0]
 
         # have enemies attack if player entered in valid input
         if check == 3:
             for e in enemy_list:
-                e.normal_attack(tmp_player) # FIXME: will want to change to random move with diff enemies
+                e.normal_attack(tmp_player) # ADD: add random moves for diff enemies
                 if tmp_player.knockout:
-                    print("You blacked out!") # FIXME: change to 'your team' later on
+                    print("You blacked out!") # FIXME: change to 'your team' later on - could check w/ if statement
                     return
                 else:
                     print("{} has {} health. \n".format(tmp_player.name, tmp_player.c_health))
@@ -47,23 +51,25 @@ def battle_command_checker(command, player, enemy_list):
     Checks that player input is valid and executes command if so.
     Args:
         command: input from player
+        player: character that user chose to execute command with
         enemy_list: list of enemies
     Effects:
         If player input is valid, executes command
     Returns:
-        0: If the player chose to quit, it quits the program
-        1: If the player chose to display help, quit, or entered an invalid command, the game continues
-        2: If all enemies have been defeated, sends 'all enemies defeated' signal to main
-        3: If player's action was completely valid and not help or quit
+        0 = Quit: If the player chose to quit, it quits the program
+        1 = Help: If the player chose to display help, quit, or entered an invalid command, the game continues
+        2 = All Clear: If all enemies have been defeated, sends 'all enemies defeated' signal to main
+        3 = Valid Command: If player's action was completely valid and not help or quit
     """
     if len(enemy_list) == 0:
         return 2
 
     elif (command == "help") or (command == "h"):
-        print("You may enter in any of these commands: fight, defend, or run") # FIXME: Update as necessary
+        print("You may enter in any of these commands: fight, defend, or run") # FIXME: Update as necessary - items next
         print("You may use the first letter of each command instead.")
         return 1
 
+    # FIXME: Add to main game loop instead
     # secret testing function
     elif (command == "ult"):
         player.c_health = 500
@@ -91,7 +97,7 @@ def battle_command_checker(command, player, enemy_list):
         print("Invalid target! Try again.")
         return 1
 
-    elif (command == "run") or (command == "r"): # FIXME: Once Overworld is added, add 'run' option
+    elif (command == "run") or (command == "r"):
         print("You run!")
         return 0
 
@@ -120,10 +126,10 @@ def event_picker(player_team):
     Args:
         player_team: list of player Character objects
     Effects:
-        calls one of n events
+        calls one of the specified events events
     """
 
-    # FIXME: May want to just return a randomized selection of events so events aren't repeated
+    # FIXME: May want to just return a randomized selection of possible events so events aren't repeated
 
     rn = random.randint(1, 5)
 
@@ -139,8 +145,9 @@ def event_picker(player_team):
         print("\n{} has fallen in a hole.\n".format(player_team[0]))
         player_team[0].damage(5)
     elif rn == 5:
-        print("\nYou have a pleasant stroll along the road. The road is quiet")
-
+        print("\nYou have a pleasant stroll along the road. The road is quiet.")
+    
+    # Ideas
         # gain an ally
         # arrive in a town
         # goblins attack
