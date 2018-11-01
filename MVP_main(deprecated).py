@@ -1,4 +1,6 @@
 
+## NOTE: Deprecated Code
+
 import Character
 import Enemy
 import random
