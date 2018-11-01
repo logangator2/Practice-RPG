@@ -13,6 +13,7 @@ class Character:
             player_c: boolean value for whether character is a player character or not
             dead: whether or not the current character is dead
             knockout: whether or not the current character is knocked out
+            defending: whether or not the current character has their defenses raised
         """
         self.name = name
         self.health = health
@@ -21,6 +22,7 @@ class Character:
         self.knockout = False
         self.defending = False
         #self.speed = speed
+        #self.strength = strength
 
         #self.item1 = None
         #self.item2 = None
@@ -34,7 +36,7 @@ class Character:
     def __str__(self):
         return self.name
 
-    def information(self): # ADD: Add more information
+    def information(self): # FIXME: Add more information, change to print statements
         """
         Returns all values of the character
         """
@@ -139,16 +141,17 @@ class Character:
     def normal_attack(self, other):
         """
         The current character attacks another character with a normal attack.
-        ADD: Modifiers for different weapons/armor/stats
+        ADD: Modifiers for different weapons/armor/stats/strength
         Args:
             other: another character whom is attacked
         Effects:
-            Other character has their current health decreased by a random amount from 1 to 10
+            Other character has their current health decreased by a random amount from 1 to 10, unless it is
+            ...a critical hit, which does 20.
         """
         crit_chance = random.randint(1, 20)
         if (crit_chance == 20):
             print("A critical hit! {} did {} damage to {}".format(self.name, 20, other.name))
-            other.damage(20) # FIXME: may want to change based on diff weapons/armor, etc.
+            other.damage(20) # FIXME: change based on diff weapons/armor/strength, etc.
             return
 
         if self.c_health == 0:
@@ -169,12 +172,12 @@ class Character:
 
 class Enemy(Character):
     """
-    An Enemy is a character that is not player controlled and dies when its HP runs out.
+    An Enemy is a character that is not player controlled and dies when its HP runs out instead of being knocked out.
     """
     def __init__(self, name, health):
         """
         Values:
-            * See Character for inherited variables *
+            * See Character for description of inherited variables *
         """
         super().__init__(name, health)
 
@@ -183,7 +186,7 @@ class Enemy(Character):
         Decreases current health by value
         If c_health is < value, then Enemy dies
         Args:
-            value: amount of damage dealt to character
+            value: amount of damage dealt to self
         """
         if self.defending == False:
             if value >= self.c_health:
@@ -198,11 +201,11 @@ class Enemy(Character):
     def normal_attack(self, other):
         """
         The current character attacks another character with a normal attack.
-        ADD: Modifiers for different weapons/armor/stats
+        ADD: Modifiers for different weapons/armor/stats/strength
         Args:
             other: another character whom is attacked
         Effects:
-            Other character has their current health decreased by a random amount from 1 to 10
+            Other character has their current health decreased by a random amount from 1 to 4 or 10 if critical hit
         """
         crit_chance = random.randint(1, 10)
         if (crit_chance == 10):
