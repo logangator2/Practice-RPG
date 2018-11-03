@@ -69,12 +69,6 @@ def battle_command_checker(command, player, enemy_list):
         print("You may use the first letter of each command instead.")
         return 1
 
-    # FIXME: Add to main game loop instead
-    # secret testing function
-    elif (command == "ult"):
-        player.c_health = 500
-        return 1
-
     elif (command == "defend") or (command == "d"):
         print()
         player.defend()
@@ -116,7 +110,7 @@ def slime_generator():
     n_slimes = random.randint(1, 5)
 
     for n in range(n_slimes):
-        slime = Character.Enemy("Slime {}".format(n + 1), 10)
+        slime = Character.Enemy("Slime {}".format(n + 1), 1, 0, 10, 0)
         enemy_list.append(slime)
     return enemy_list        
 
@@ -131,7 +125,7 @@ def event_picker(player_team):
 
     # FIXME: May want to just return a randomized selection of possible events so events aren't repeated
 
-    rn = random.randint(1, 5)
+    rn = random.randint(1, 6)
 
     if rn == 1:
         slime_event(player_team)
@@ -146,6 +140,10 @@ def event_picker(player_team):
         player_team[0].damage(5)
     elif rn == 5:
         print("\nYou have a pleasant stroll along the road. The road is quiet.")
+    elif rn == 6:
+        g = random.randint(1, 100)
+        player_team[0].gold += g
+        print("\nYou found {} gold on the road!".format(g))
     
     # Ideas
         # gain an ally
@@ -168,7 +166,7 @@ def baby_event(player_team):
         answer = (input("\nYou see a hurt baby animal on the road. Will you try and help it? Y/N ")).lower()
         if (answer == "yes") or (answer == "y"):
             print("\nThe animal was crying for its mother! The beast appears to defend its young.")
-            enemy_list.append(Character.Enemy("Momma Bear", 20))
+            enemy_list.append(Character.Enemy("Momma Bear", 1, 0, 20, 0))
             battle(player_team, enemy_list)
         elif (answer == "no") or (answer == "n"):
             print("\nYou leave the animal to die. You're a terrible person.")
@@ -187,4 +185,5 @@ def slime_event(player_team):
 
     enemy_list = slime_generator() # generate slime enemies
     battle(player_team, enemy_list)
+    # player_team[0].gain_xp(100) # FIXME: add exp calculator
     return

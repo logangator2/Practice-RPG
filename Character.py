@@ -1,10 +1,11 @@
 import random
+import math
 
 class Character:
     """
     Character class to hold and react to the simulated world around them
     """
-    def __init__(self, name, health):
+    def __init__(self, name, level, experience, health, gold):
         """
         Values:
             name: str name for the character
@@ -23,10 +24,15 @@ class Character:
         self.defending = False
         #self.speed = speed
         #self.strength = strength
+        self.experience = experience
+        self.level = level
+        self.gold = gold
 
-        #self.item1 = None
-        #self.item2 = None
-        #self.item3 = None
+        #self.backpack = []
+
+        #self.weapon = None
+        #self.shield = None
+        #self.r_weapon = None
 
         #self.helmet = None
         #self.torso = None
@@ -39,10 +45,41 @@ class Character:
     def information(self): # FIXME: Add more information, change to print statements
         """
         Returns all values of the character
+        Returns:
+            character_dict: a dictionary of all of the character's traits and equipment
         """
         character_dict = {"Name": self.name, "Current Health": self.c_health, 
-            "Max Health": self.health, "Dead" : self.dead}
+            "Max Health": self.health, "Knocked Out" : self.knockout, "Gold" : self.gold}
         return character_dict
+
+    def next_level(self):
+        """
+        NOTE: level formula from http://howtomakeanrpg.com/a/how-to-make-an-rpg-levels.html
+        Used by gain_xp to determine whether a character has leveled up
+        Returns:
+            n_level: int value of the next level
+        """
+        exponent = 1.5
+        n_level = math.floor(1000 * (self.level ** exponent))
+        return n_level
+
+    def gain_xp(self, value):
+        """
+        Adds experience to player's pool.
+        Args:
+            value: int by which to increase experience
+        Effects:
+            1. If player gained experience > required experience for the next level, gain a level
+            2. Else, simply add value to experience pool
+        """
+        self.experience += value
+        print("\n{} gained {} experience!".format(self.name, value))
+
+        # check if level gain
+        if self.experience > self.next_level():
+            self.level += 1
+            print("\n{} gained a level!".format(self.name))
+        return
 
     def damage(self, value):
         """
@@ -174,12 +211,12 @@ class Enemy(Character):
     """
     An Enemy is a character that is not player controlled and dies when its HP runs out instead of being knocked out.
     """
-    def __init__(self, name, health):
+    def __init__(self, name, level, experience, health, gold):
         """
         Values:
             * See Character for description of inherited variables *
         """
-        super().__init__(name, health)
+        super().__init__(name, level, experience, health, gold)
 
     def damage(self, value):
         """

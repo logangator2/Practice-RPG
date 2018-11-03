@@ -12,15 +12,34 @@ def main():
     # main loop checker
     check = True
 
-    # create player character
-    p_name = input("Enter your name: ")
-    player = Character.Character(p_name, 20)
-    player_team = [player]
+    # loop to select whether to continue from old save
+    while (check):
+        cmd = input("Please select an option: 1: New Game, 2: Continue Game, 3: Quit. ")
 
-    # opening message
-    print("\nWelcome, {}. You have {} health.".format(player.name, player.c_health))
+        if cmd == "1":
+            # create player character
+            p_name = input("Enter your name: ")
+            player = Character.Character(p_name, 1, 0, 20, 0)
+            player_team = [player]
 
-    event_counter = 0
+            # opening message
+            print("\nWelcome, {}. You have {} health.".format(player.name, player.c_health))
+
+            event_counter = 0
+            check = False
+            break
+
+        if cmd == "2":
+            # open file
+            print("\n Welcome back!")
+            break
+        if cmd == "3":
+            return
+        else:
+            print("\nInvalid command! Try again.")
+
+    # set loop checker back to normal
+    check = True
 
     # main game loop
     while (check):
@@ -44,18 +63,28 @@ def main():
         else:
             print("\nYou are walking along a road.\n")
             # ask for player input
-            command = (input("What would you like to do? Type 'Help' for commands. ")
+            command = input("What would you like to do? Type 'Help' for commands. ")
             command = command.lower()
                        
             # display possible commands
             if (command == "help") or (command == "h"):
-                print("\nYou may enter in any of these commands: move, quit")
+                print("\nYou may enter in any of these commands: move, status, quit")
                 print("You may use the first letter of each command instead.")
-                       
+       
+            # secret testing function
+            elif (command == "ult"):
+                for p in player_team:
+                    p.c_health = 99999
+                print("\nult enabled")
+
+            # display player team status
+            elif (command == "status") or (command == "s"):
+                for p in player_team:
+                    print("{}".format(p.information()))
+
             # trigger event
             elif (command == "move") or (command == "m"):
                 print("\nYou move along the road.")
-                #Events.event_picker(player_team)
                 Events.event_picker(player_team)
                 event_counter += 1
                        
