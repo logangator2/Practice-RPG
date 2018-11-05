@@ -60,7 +60,7 @@ class Character:
             n_level: int value of the next level
         """
         exponent = 1.5
-        n_level = math.floor(1000 * (self.level ** exponent))
+        n_level = math.floor(100 * (self.level ** exponent))
         return n_level
 
     def gain_xp(self, value):
@@ -127,7 +127,7 @@ class Character:
                 else:
                     self.c_health = self.c_health + value
                     self.knockout = False
-                    print("{} was healed by {} points.".format(self.name, self.value))
+                    print("{} was healed by {} points.".format(self.name, value))
                     return
         else:
             print("{} has died and cannot be healed!".format(self.name))
@@ -254,5 +254,26 @@ class Enemy(Character):
             print("{} did {} damage to {}".format(self.name, dmg, other.name))
             other.damage(dmg)
         return
+
+    def calc_experience(self, player_team):
+        """
+        Calculate experience of enemy based on their level and Enemy difficulty
+        Args:
+
+        Effects:
+
+        """
+        levels = 0
+        tiers = {"weak" : 0.25, "annoying" : 0.75, "average" : 1, "strong" : 1.25, "boss" : 2}
+
+        for p in player_team:
+            levels += p.level
+        avg_level = math.ceil(levels/len(player_team))
+
+        # calculate xp value
+
+        value = 0
+
+        return value
 
 

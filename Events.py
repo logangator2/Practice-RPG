@@ -1,5 +1,6 @@
 
 import random
+import math
 import Character
 
 def battle(player_team, enemy_list):
@@ -21,6 +22,15 @@ def battle(player_team, enemy_list):
         # check if all enemies have been defeated
         if len(enemy_list) == 0:
             print("You win! All enemies have been defeated.")
+            value = 0
+
+            # calculate experience
+            for e in enemy_list:
+                value += e.calc_experience(player_team)
+            value = math.ceil(value / len(player_team))
+            # deal experience
+            for p in player_team:
+                p.gain_xp(value)
             break
 
         # display enemies
@@ -132,9 +142,10 @@ def event_picker(player_team):
     elif rn == 2:
         baby_event(player_team)
     elif rn == 3:
-        print("\nYou have stumbled into an unforgiving god's terrain.\n")
+        print("\nYou have stumbled into a forgiving god's terrain.\n")
         for p in player_team:
-            p.death()
+            value = math.ceil(0.15 * p.health)
+            p.healing(value)
     elif rn == 4:
         print("\n{} has fallen in a hole.\n".format(player_team[0]))
         player_team[0].damage(5)
@@ -168,6 +179,8 @@ def baby_event(player_team):
             print("\nThe animal was crying for its mother! The beast appears to defend its young.")
             enemy_list.append(Character.Enemy("Momma Bear", 1, 0, 20, 0))
             battle(player_team, enemy_list)
+            check = False
+            break
         elif (answer == "no") or (answer == "n"):
             print("\nYou leave the animal to die. You're a terrible person.")
             check = False
@@ -185,5 +198,4 @@ def slime_event(player_team):
 
     enemy_list = slime_generator() # generate slime enemies
     battle(player_team, enemy_list)
-    # player_team[0].gain_xp(100) # FIXME: add exp calculator
     return
