@@ -11,6 +11,10 @@ def battle(player_team, enemy_list):
     """
     check = 1
     n_enemies = len(enemy_list)
+    og_enemies = []
+
+    for e in enemy_list:
+        og_enemies.append(e)
 
     if n_enemies == 1:
         print("Oh no! {} has appeared!".format(enemy_list[0].name))
@@ -24,10 +28,11 @@ def battle(player_team, enemy_list):
             print("You win! All enemies have been defeated.")
             value = 0
 
-            # calculate experience
-            for e in enemy_list:
+            # calc experience
+            for e in og_enemies:
                 value += e.calc_experience(player_team)
             value = math.ceil(value / len(player_team))
+
             # deal experience
             for p in player_team:
                 p.gain_xp(value)
@@ -75,7 +80,7 @@ def battle_command_checker(command, player, enemy_list):
         return 2
 
     elif (command == "help") or (command == "h"):
-        print("You may enter in any of these commands: fight, defend, or run") # FIXME: Update as necessary - items next
+        print("You may enter in any of these commands: fight, defend, status, or run") # FIXME: Update as necessary - items next
         print("You may use the first letter of each command instead.")
         return 1
 
@@ -84,6 +89,17 @@ def battle_command_checker(command, player, enemy_list):
         player.defend()
         print()
         return 3
+
+    # secret testing function
+    elif (command == "ult"):
+        player.c_health = 99999
+        print("\nult enabled")
+        return 1
+
+    # display player status
+    elif (command == "status") or (command == "s"):
+        player.information()
+        return 1
 
     elif (command == "fight") or (command == "f"):
         target = input("Which enemy would you like to attack? ")
@@ -120,7 +136,7 @@ def slime_generator():
     n_slimes = random.randint(1, 5)
 
     for n in range(n_slimes):
-        slime = Character.Enemy("Slime {}".format(n + 1), 1, 0, 10, 0)
+        slime = Character.Enemy("Slime {}".format(n + 1), 1, 0, 10, 0, "weak")
         enemy_list.append(slime)
     return enemy_list        
 
@@ -177,7 +193,7 @@ def baby_event(player_team):
         answer = (input("\nYou see a hurt baby animal on the road. Will you try and help it? Y/N ")).lower()
         if (answer == "yes") or (answer == "y"):
             print("\nThe animal was crying for its mother! The beast appears to defend its young.")
-            enemy_list.append(Character.Enemy("Momma Bear", 1, 0, 20, 0))
+            enemy_list.append(Character.Enemy("Momma Bear", 1, 0, 20, 0, "average"))
             battle(player_team, enemy_list)
             check = False
             break

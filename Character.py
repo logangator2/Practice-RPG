@@ -28,7 +28,7 @@ class Character:
         self.level = level
         self.gold = gold
 
-        #self.backpack = []
+        #self.backpack = [] # FIXME: maybe a dict?
 
         #self.weapon = None
         #self.shield = None
@@ -48,9 +48,12 @@ class Character:
         Returns:
             character_dict: a dictionary of all of the character's traits and equipment
         """
-        character_dict = {"Name": self.name, "Current Health": self.c_health, 
-            "Max Health": self.health, "Knocked Out" : self.knockout, "Gold" : self.gold}
-        return character_dict
+        print("\nName: {}".format(self.name))
+        print("Level: {}, Progress to Next Level: {}/{}".format(self.level, self.experience, self.next_level()))
+        print("Health: {}/{}".format(self.c_health, self.health))
+        print("Knocked Out: {}".format(self.knockout))
+        print("Gold: {}".format(self.gold))
+        return
 
     def next_level(self):
         """
@@ -211,12 +214,14 @@ class Enemy(Character):
     """
     An Enemy is a character that is not player controlled and dies when its HP runs out instead of being knocked out.
     """
-    def __init__(self, name, level, experience, health, gold):
+    def __init__(self, name, level, experience, health, gold, tier):
         """
         Values:
             * See Character for description of inherited variables *
         """
         super().__init__(name, level, experience, health, gold)
+        tiers = {"weak" : 0.2, "annoying" : 0.75, "average" : 1, "strong" : 1.25, "boss" : 2}
+        self.tier = tiers[tier]
 
     def damage(self, value):
         """
@@ -259,21 +264,18 @@ class Enemy(Character):
         """
         Calculate experience of enemy based on their level and Enemy difficulty
         Args:
-
-        Effects:
-
+            player_team: list of player objects, used to find avg player level
+        Returns:
+            value: int for experience gained by players
         """
         levels = 0
-        tiers = {"weak" : 0.25, "annoying" : 0.75, "average" : 1, "strong" : 1.25, "boss" : 2}
 
         for p in player_team:
             levels += p.level
         avg_level = math.ceil(levels/len(player_team))
 
         # calculate xp value
-
-        value = 0
-
+        value = (100 * avg_level) * self.tier
         return value
 
 

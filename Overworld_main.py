@@ -51,8 +51,8 @@ def main():
 
         if cmd == "2":
             # open file
-            print("\n Welcome back!")
-            break
+            print("\nWelcome back!")
+            return # FIXME: change to break when you put in save files
         if cmd == "3":
             return
         else:
@@ -60,15 +60,23 @@ def main():
 
     # set loop checker back to normal
     check = True
+    # set/reset rest limit
+    rest_count = 3
+    rest_reset = 10
 
     # main game loop
     while (check):
         
         # check if enough events have occurred
-        if event_counter == 10:
+        if event_counter == 20:
             print("\nYou've had quite an adventure!\n")
             check = False
             break
+
+        # check if enough events have occurred to reset the rest counter
+        if (event_counter % 10) == 0:
+            print("\nYou're tired and able to rest again.") # FIXME: gives a lot of repeat info
+            rest_count = 3
             
         # check if players are still alive
         check = still_alive(player_team)
@@ -103,7 +111,7 @@ def main():
                        
             # display possible commands
             if (command == "help") or (command == "h"):
-                print("\nYou may enter in any of these commands: move, status, quit")
+                print("\nYou may enter in any of these commands: move, rest, status, quit")
                 print("You may use the first letter of each command instead.")
        
             # secret testing function
@@ -115,16 +123,28 @@ def main():
             # display player team status
             elif (command == "status") or (command == "s"):
                 for p in player_team:
-                    print("{}".format(p.information()))
+                    p.information()
 
             # trigger event
             elif (command == "move") or (command == "m"):
                 print("\nYou move along the road.")
                 Events.event_picker(player_team)
                 event_counter += 1
+
+            # resting event
+            elif (command == "rest") or (command == "r"):
+                if rest_count <= 0:
+                    print("\nYou're not tired!")
+                else:
+                    rest_count -= 1
+                    print("\nYou take a rest.")
+                    for p in player_team:
+                        p.healing(math.ceil(0.15 * p.health))
+                    event_counter += 1
                        
             # quit game
             elif(command == "quit") or (command == "q"):
+                # FIXME: add save option before quitting
                 check = False
                 break
             else:
