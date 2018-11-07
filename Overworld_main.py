@@ -39,7 +39,7 @@ def main():
         if cmd == "1":
             # create player character
             p_name = input("Enter your name: ")
-            player = Character.Character(p_name, 1, 0, 20, 10)
+            player = Character.Ally(p_name, 20, 1, 0, 10)
             player_team = [player]
 
             # opening message
@@ -51,8 +51,9 @@ def main():
 
         if cmd == "2":
             # open file
-            print("\nWelcome back!")
-            return # FIXME: change to break when you put in save files
+            # print("\nWelcome back!")
+            print("Sorry! Save files aren't here yet!")
+            # FIXME: add break when you put in save files
         if cmd == "3":
             return
         else:
@@ -62,7 +63,6 @@ def main():
     check = True
     # set/reset rest limit
     rest_count = 3
-    rest_reset = 10
 
     # main game loop
     while (check):
@@ -74,7 +74,7 @@ def main():
             break
 
         # check if enough events have occurred to reset the rest counter
-        if (event_counter % 10) == 0:
+        if ((event_counter % 10) == 0):
             print("\nYou're tired and able to rest again.") # FIXME: gives a lot of repeat info
             rest_count = 3
             
@@ -118,6 +118,7 @@ def main():
             elif (command == "ult"):
                 for p in player_team:
                     p.c_health = 99999
+                    # FIXME: add strength modifier 
                 print("\nult enabled")
 
             # display player team status

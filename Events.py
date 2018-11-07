@@ -38,9 +38,14 @@ def battle(player_team, enemy_list):
                 p.gain_xp(value)
             break
 
-        # display enemies
-        for e in enemy_list:
-            print("{},".format(e.name), "HP = {}".format(e.c_health))
+        # display teams
+        print("\nEnemies:")
+        for e in enemy_list:   
+            e.information()
+        print("\nAllies")
+        for p in player_team:
+            print("Name: {}, Health: {}/{}".format(p.name, p.c_health, p.health))
+        print()
             
         # request user input
         for p in player_team:
@@ -107,12 +112,25 @@ def battle_command_checker(command, player, enemy_list):
         # check for valid target
         for e in enemy_list:
             if e.name.lower() == target.lower():
-                print()
                 player.normal_attack(e)
                 print()
                 if e.dead:
                     enemy_list.remove(e)
                 return 3
+
+        # FIXME: add in number options
+        try:
+            enemy_num = int(target)
+        except:
+            print("Invalid target! Try again.")
+            return 1
+        print(enemy_num)
+        if (enemy_num > 0) and (enemy_num <= len(enemy_list)):
+            player.normal_attack(enemy_list[enemy_num - 1])
+            print()
+            if enemy_list[enemy_num - 1].dead:
+                enemy_list.remove(enemy_list[enemy_num - 1])
+            return 3
 
         print("Invalid target! Try again.")
         return 1
@@ -136,7 +154,7 @@ def slime_generator():
     n_slimes = random.randint(1, 5)
 
     for n in range(n_slimes):
-        slime = Character.Enemy("Slime {}".format(n + 1), 1, 0, 10, 0, "weak")
+        slime = Character.Enemy("Slime {}".format(n + 1), 10, "weak")
         enemy_list.append(slime)
     return enemy_list        
 
@@ -193,7 +211,7 @@ def baby_event(player_team):
         answer = (input("\nYou see a hurt baby animal on the road. Will you try and help it? Y/N ")).lower()
         if (answer == "yes") or (answer == "y"):
             print("\nThe animal was crying for its mother! The beast appears to defend its young.")
-            enemy_list.append(Character.Enemy("Momma Bear", 1, 0, 20, 0, "average"))
+            enemy_list.append(Character.Enemy("Momma Bear", 20, "average"))
             battle(player_team, enemy_list)
             check = False
             break
