@@ -42,7 +42,7 @@ def battle(player_team, enemy_list):
         print("\nEnemies:")
         for e in enemy_list:   
             e.information()
-        print("\nAllies")
+        print("\nAllies:")
         for p in player_team:
             print("Name: {}, Health: {}/{}".format(p.name, p.c_health, p.health))
         print()
@@ -124,7 +124,7 @@ def battle_command_checker(command, player, enemy_list):
         except:
             print("Invalid target! Try again.")
             return 1
-        print(enemy_num)
+        
         if (enemy_num > 0) and (enemy_num <= len(enemy_list)):
             player.normal_attack(enemy_list[enemy_num - 1])
             print()
@@ -151,7 +151,7 @@ def slime_generator():
         enemy_list: a list of enemy slimes
     """
     enemy_list = []
-    n_slimes = random.randint(1, 5)
+    n_slimes = random.randint(1, 4)
 
     for n in range(n_slimes):
         slime = Character.Enemy("Slime {}".format(n + 1), 10, "weak")

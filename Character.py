@@ -72,9 +72,6 @@ class Character:
         print("{} died!".format(self.name))
         return
 
-    def dead(self):
-        return self.dead
-
     def revive(self, value):
         """
         Handles if a character is revived.
@@ -291,21 +288,21 @@ class Enemy(Character):
 
     def normal_attack(self, other):
         """
-        The current character attacks another character with a normal attack.
+        The current enemy attacks another character with a normal attack.
         ADD: Modifiers for different weapons/armor/stats/strength
         Args:
             other: another character whom is attacked
         Effects:
-            Other character has their current health decreased by a random amount from 1 to 4 or 10 if critical hit
+            Other character has their current health decreased by a random amount, dependent on enemy tier
         """
-        crit_chance = random.randint(1, 10)
-        if (crit_chance == 10):
-            other.damage(10) # FIXME: may want to change based on diff weapons/armor, etc.
+        crit_chance = random.randint(1, 20)
+        if (crit_chance == 20):
+            other.damage(int(10 * self.tier)) # FIXME: may want to change based on diff weapons/armor, etc.
             print("A critical hit! {} did {} damage to {}".format(self.name, 10, other.name))
             return
         else:
-            dmg = random.randint(1, (4 * other.level)) # FIXME: change with strength - temporary fix
-            print("{} did {} damage to {}".format(self.name, dmg, other.name))
+            dmg = random.randint(1, (5 * self.tier))
+            print("{} did {} damage to {}".format(self.name, int(dmg), other.name))
             other.damage(dmg)
         return
 
@@ -324,7 +321,7 @@ class Enemy(Character):
         avg_level = math.ceil(levels/len(player_team))
 
         # calculate xp value
-        value = (100 * avg_level) * self.tier
+        value = (100 * avg_level) * self.tier # FIXME: on higher levels this generates too much xp
         return value
 
 

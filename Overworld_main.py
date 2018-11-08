@@ -140,7 +140,7 @@ def main():
                     rest_count -= 1
                     print("\nYou take a rest.")
                     for p in player_team:
-                        p.healing(math.ceil(0.15 * p.health))
+                        p.healing(math.ceil((random.randint(10, 75)/100) * p.health))
                     event_counter += 1
                        
             # quit game
