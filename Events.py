@@ -8,6 +8,9 @@ def battle(player_team, enemy_list):
     Runs main battle simulation for any encounter. 
     Effects:
         Stats for characters change depending on outcome of battle.
+    Returns:
+        True: if players succeeded
+        False: if players were knocked out
     """
     check = 1
     n_enemies = len(enemy_list)
@@ -17,7 +20,7 @@ def battle(player_team, enemy_list):
         og_enemies.append(e)
 
     if n_enemies == 1:
-        print("Oh no! {} has appeared!".format(enemy_list[0].name))
+        print("Oh no! An enemy has appeared!")
     else:
         print("Oh no! Enemies have appeared!")
 
@@ -36,7 +39,7 @@ def battle(player_team, enemy_list):
             # deal experience
             for p in player_team:
                 p.gain_xp(value)
-            break
+            return True
 
         # display teams
         print("\nEnemies:")
@@ -61,10 +64,10 @@ def battle(player_team, enemy_list):
                 e.normal_attack(tmp_player) # ADD: add random moves for diff enemies
                 if tmp_player.knockout:
                     print("You blacked out!") # FIXME: change to 'your team' later on - could check w/ if statement
-                    return
+                    return False
                 else:
-                    print("{} has {} health. \n".format(tmp_player.name, tmp_player.c_health))
-    return
+                    print("{} has {} health.".format(tmp_player.name, tmp_player.c_health))
+    return False
 
 def battle_command_checker(command, player, enemy_list):
     """
@@ -98,6 +101,7 @@ def battle_command_checker(command, player, enemy_list):
     # secret testing function
     elif (command == "ult"):
         player.c_health = 99999
+        player.strength = 99999
         print("\nult enabled")
         return 1
 
@@ -176,10 +180,7 @@ def event_picker(player_team):
     elif rn == 2:
         baby_event(player_team)
     elif rn == 3:
-        print("\nYou have stumbled into a forgiving god's terrain.\n")
-        for p in player_team:
-            value = math.ceil(0.15 * p.health)
-            p.healing(value)
+        god_event(player_team)
     elif rn == 4:
         print("\n{} has fallen in a hole.\n".format(player_team[0]))
         player_team[0].damage(5)
@@ -198,6 +199,18 @@ def event_picker(player_team):
         # find chest w/ items
         # two groups are fighting and you have to choose between the two
         # troll asks you a riddle and if you don't know the answer you fight
+
+def boss_event(player_team):
+    """
+    Runs the boss event
+    """
+    enemy_list = [Character.Enemy("Dragon", 50, "boss")]
+    if battle(player_team, enemy_list):
+        player_team[0].gold += 1000
+        print("\nYou've saved the surrounding area! You've earned {} gold.".format(1000))
+    else:
+        print("\nThe dragon has incinerated you.")
+    return
 
 def baby_event(player_team):
     """
@@ -223,6 +236,27 @@ def baby_event(player_team):
             print("\nInvalid command! Try again.")
     return
 
+def god_event(player_team):
+    """
+    Runs forgiving god's event, also used to heal up new players.
+    Effects:
+        Heals up 15% of healthof each p in player_team
+    """
+    print("\nYou have stumbled into a forgiving god's terrain.\n")
+    for p in player_team:
+        value = math.ceil(0.15 * p.health)
+        p.healing(value)
+
+def best_god_event(player_team):
+    """
+    Runs forgiving god's event, also used to heal up new players.
+    Effects:
+        Heals up 15% of healthof each p in player_team
+    """
+    print("\nYou have stumbled into a forgiving god's terrain.\n")
+    for p in player_team:
+        p.healing(p.health)
+
 def slime_event(player_team):
     """
     Runs slime event
@@ -231,5 +265,16 @@ def slime_event(player_team):
     """
 
     enemy_list = slime_generator() # generate slime enemies
+    battle(player_team, enemy_list)
+    return
+
+def easy_slime_event(player_team):
+    """
+    Runs easy slime event for new players
+    Args:
+        player_team: list of player Character objects
+    """
+
+    enemy_list = [Character.Enemy("Slime 1", 10, "weak"), Character.Enemy("Slime 2", 10, "weak")]
     battle(player_team, enemy_list)
     return

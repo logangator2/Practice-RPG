@@ -28,7 +28,7 @@ def main():
     """
     Main game loop of the Practice RPG
     """
-    
+
     # main loop checker
     check = True
 
@@ -39,7 +39,7 @@ def main():
         if cmd == "1":
             # create player character
             p_name = input("Enter your name: ")
-            player = Character.Ally(p_name, 20, 1, 0, 10)
+            player = Character.Ally(p_name, 20, 1, 0, 1, 10)
             player_team = [player]
 
             # opening message
@@ -52,9 +52,13 @@ def main():
         if cmd == "2":
             # open file
             # print("\nWelcome back!")
+            """
+            Need player list, event_counter, 
+            """
             print("Sorry! Save files aren't here yet!")
             # FIXME: add break when you put in save files
         if cmd == "3":
+            print("\nQuitting...")
             return
         else:
             print("\nInvalid command! Try again.")
@@ -63,20 +67,17 @@ def main():
     check = True
     # set/reset rest limit
     rest_count = 3
+    rest_test = True
 
     # main game loop
     while (check):
         
         # check if enough events have occurred
-        if event_counter == 20:
+        if event_counter == 30:
+            Events.boss_event(player_team) # Final event
             print("\nYou've had quite an adventure!\n")
             check = False
             break
-
-        # check if enough events have occurred to reset the rest counter
-        if ((event_counter % 10) == 0):
-            print("\nYou're tired and able to rest again.") # FIXME: gives a lot of repeat info
-            rest_count = 3
             
         # check if players are still alive
         check = still_alive(player_team)
@@ -102,6 +103,12 @@ def main():
                 p.gold -= math.floor(lost_gold / len(player_team))
             print("\nYour adventurers wake up, but have lost {} gold.".format(lost_gold))
             
+        # check if enough events have occurred to reset the rest counter
+        if ((event_counter % 10) == 0) and (rest_test != True):
+            print("\nYou're tired and able to rest again.")
+            rest_count = 3
+            rest_test = True # prevents repeat information
+
         # continue adventure
         else:
             print("\nYou are walking along a road.\n")
@@ -118,7 +125,8 @@ def main():
             elif (command == "ult"):
                 for p in player_team:
                     p.c_health = 99999
-                    # FIXME: add strength modifier 
+                    p.strength = 99999
+                    # FIXME: add speed modifier 
                 print("\nult enabled")
 
             # display player team status
@@ -129,8 +137,20 @@ def main():
             # trigger event
             elif (command == "move") or (command == "m"):
                 print("\nYou move along the road.")
-                Events.event_picker(player_team)
-                event_counter += 1
+
+                # new player road
+                if event_counter == 0:
+                    Events.easy_slime_event(player_team)
+                    event_counter += 1
+                elif event_counter == 1:
+                    Events.best_god_event(player_team)
+                    event_counter += 1
+
+                # normal encounters
+                else:
+                    Events.event_picker(player_team)
+                    event_counter += 1
+                    rest_test = False
 
             # resting event
             elif (command == "rest") or (command == "r"):
@@ -140,18 +160,18 @@ def main():
                     rest_count -= 1
                     print("\nYou take a rest.")
                     for p in player_team:
-                        p.healing(math.ceil((random.randint(10, 75)/100) * p.health))
+                        p.healing(math.ceil((random.randint(10, 60)/100) * p.health))
                     event_counter += 1
                        
             # quit game
             elif(command == "quit") or (command == "q"):
                 # FIXME: add save option before quitting
                 check = False
+                print("\nQuitting...")
                 break
             else:
                 print("\nInvalid command! Please retry.")
     return
-
 
 if __name__ == '__main__':
     main()

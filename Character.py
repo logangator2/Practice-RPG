@@ -21,7 +21,6 @@ class Character:
         self.dead = False
         self.defending = False
         #self.speed = speed
-        #self.strength = strength
 
     def __str__(self):
         return self.name
@@ -95,7 +94,6 @@ class Character:
     def normal_attack(self, other):
         """
         The current character attacks another character with a normal attack.
-        ADD: Modifiers for different weapons/armor/stats/strength
         Args:
             other: another character whom is attacked
         Effects:
@@ -128,17 +126,18 @@ class Ally(Character):
     """
     An Ally is a character that is player controlled.
     """
-    def __init__(self, name, health, level, experience, gold):
+    def __init__(self, name, health, level, experience, strength, gold):
         """
         Values:
             * See Character for description of inherited variables *
             knockout: boolean to tell whether character is conscious
             experience: (int) metric for determining level
-            level: int
+            level: int for general power level
             gold: int for how much money a character has
         """
         super().__init__(name, health)
         self.knockout = False
+        self.strength = strength
         self.experience = experience
         self.level = level
         self.gold = gold
@@ -158,6 +157,7 @@ class Ally(Character):
         print("\nName: {}".format(self.name))
         print("Health: {}/{}".format(self.c_health, self.health))
         print("Level: {}, Progress to Next Level: {}/{}".format(self.level, self.experience, self.next_level()))
+        print("Strength: {}".format(self.strength))
         print("Knocked Out: {}".format(self.knockout))
         print("Gold: {}".format(self.gold))
         return
@@ -189,8 +189,9 @@ class Ally(Character):
         if self.experience >= self.next_level():
             # FIXME: add in stat gains here
             self.health += 5
-            self.c_health = self.health
+            self.strength += random.randint(1, 2)
 
+            self.c_health = self.health
             self.level += 1
             print("\n{} gained a level!".format(self.name))
         return
@@ -256,6 +257,28 @@ class Ally(Character):
         print("{} has been knocked out!".format(self.name))
         return
 
+    def normal_attack(self, other):
+        """
+        The current character attacks another character with a normal attack.
+        Args:
+            other: another character whom is attacked
+        Effects:
+            Other character has their current health decreased, unless critical hit
+        """
+        crit_chance = random.randint(1, 20)
+        if (crit_chance == 20):
+            print("A critical hit! {} did {} damage to {}".format(self.name, 20 + self.strength, other.name))
+            other.damage(20 + self.strength) # FIXME: change based on diff weapons/armor/strength, etc.
+            return
+
+        if self.c_health == 0:
+            print("{} cannot attack.".format(self.name))
+        else:
+            dmg = random.randint(1, 10) + self.strength
+            print("\n{} did {} damage to {}".format(self.name, dmg, other.name))
+            other.damage(dmg)
+        return
+
 class Enemy(Character):
     """
     An Enemy is a character that is not player controlled and dies when its HP runs out instead of being knocked out.
@@ -289,7 +312,6 @@ class Enemy(Character):
     def normal_attack(self, other):
         """
         The current enemy attacks another character with a normal attack.
-        ADD: Modifiers for different weapons/armor/stats/strength
         Args:
             other: another character whom is attacked
         Effects:
@@ -297,11 +319,11 @@ class Enemy(Character):
         """
         crit_chance = random.randint(1, 20)
         if (crit_chance == 20):
-            other.damage(int(10 * self.tier)) # FIXME: may want to change based on diff weapons/armor, etc.
+            other.damage(int(20 * self.tier))
             print("A critical hit! {} did {} damage to {}".format(self.name, 10, other.name))
             return
         else:
-            dmg = random.randint(1, (5 * self.tier))
+            dmg = random.randint(1, (10 * self.tier))
             print("{} did {} damage to {}".format(self.name, int(dmg), other.name))
             other.damage(dmg)
         return
@@ -321,7 +343,7 @@ class Enemy(Character):
         avg_level = math.ceil(levels/len(player_team))
 
         # calculate xp value
-        value = (100 * avg_level) * self.tier # FIXME: on higher levels this generates too much xp
+        value = (50 * avg_level) * self.tier # FIXME: on higher levels this generates too much xp
         return value
 
 
