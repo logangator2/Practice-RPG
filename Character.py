@@ -142,7 +142,7 @@ class Ally(Character):
         self.level = level
         self.gold = gold
 
-        #self.backpack = [] # FIXME: maybe a dict?
+        self.backpack = [] # FIXME: maybe a dict?
 
         #self.weapon = None
         #self.shield = None
@@ -154,12 +154,15 @@ class Ally(Character):
         #self.boots = None
 
     def information(self):
-        print("\nName: {}".format(self.name))
+        print("\n\nName: {}".format(self.name))
         print("Health: {}/{}".format(self.c_health, self.health))
         print("Level: {}, Progress to Next Level: {}/{}".format(self.level, self.experience, self.next_level()))
         print("Strength: {}".format(self.strength))
         print("Knocked Out: {}".format(self.knockout))
         print("Gold: {}".format(self.gold))
+        print("Backpack: ")
+        for item in self.backpack:
+            print("-{}".format(item.name))
         return
 
     def next_level(self):
@@ -186,14 +189,18 @@ class Ally(Character):
         print("\n{} gained {} experience!".format(self.name, value))
 
         # check if level gain
-        if self.experience >= self.next_level():
-            # FIXME: add in stat gains here
-            self.health += 5
-            self.strength += random.randint(1, 2)
+        while (True):
+            if self.experience >= self.next_level():
+                # FIXME: add in stat gains here - based on level?
+                self.health += 5
+                self.strength += random.randint(1, 2)
 
-            self.c_health = self.health
-            self.level += 1
-            print("\n{} gained a level!".format(self.name))
+                self.c_health = self.health
+                self.level += 1
+                print("\n{} gained a level!".format(self.name))
+                print("{} was healed to full health!".format(self.name))
+            else:
+                break
         return
 
     def damage(self, value):
@@ -289,7 +296,7 @@ class Enemy(Character):
             * See Character for description of inherited variables *
         """
         super().__init__(name, health)
-        tiers = {"weak" : 0.2, "annoying" : 0.75, "average" : 1, "strong" : 1.25, "boss" : 2}
+        tiers = {"weak" : 0.25, "annoying" : 0.75, "average" : 1, "strong" : 1.25, "boss" : 2}
         self.tier = tiers[tier]
 
     def damage(self, value):
@@ -323,7 +330,7 @@ class Enemy(Character):
             print("A critical hit! {} did {} damage to {}".format(self.name, 10, other.name))
             return
         else:
-            dmg = random.randint(1, (10 * self.tier))
+            dmg = random.randint(1, int(10 * self.tier))
             print("{} did {} damage to {}".format(self.name, int(dmg), other.name))
             other.damage(dmg)
         return

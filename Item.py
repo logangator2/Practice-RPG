@@ -8,43 +8,81 @@ class Item():
 
     General Item class
     """
-    def __init__(self, name, description, value):
+    def __init__(self, name, description):
         """
         Values:
             name: (str) 
-            description: (str) 
-            value: (int) how much gold the item is worth
+            description: (str)
         """
         self.name = name
         self.description = description
-        self.value = value
+
+    def use(self):
+        pass
 
 class Potion(Item):
     """
     
     """
-    def __init__(self, name, description, value, amount):
-        super().__init__(name, description, value)
-        self.amount = amount
+    def __init__(self, name, description):
+        super().__init__(name, description)
 
-    # def heal(self, other):
-    #     Character.healing(10) # work?
+    def use(self):
+        pass
+
+class Healing_Potion(Potion):
+    """
+    
+    """
+    def __init__(self, name, description, tier):
+        super().__init__(name, description)
+        tiers = {"Minor" : 0.5, "Normal" : 1, "Major": 2}
+
+        self.tier = tiers[tier]
+
+    def use(self, character):
+        """
+        Heals selected character. Potion power based on tier.
+        Args:
+            character: Player object
+        Effects:
+            character object is healed by certain amount.
+        """
+        value = int(character.level * self.tier * 5)
+        character.healing(value)
+        return
 
 class Armor(Item):
     """
 
     """
-    def __init__(self, name, description, value, defense):
-        super().__init__(name, description, value)
-        self.defense = defense
+    def __init__(self, name, description):
+        super().__init__(name, description)
+        tiers = {"Leather" : 0.5, "Normal" : 1, "Major": 2}
+        types = ["helmet", "torso", "leggings", "boots"]
+        self.defense = 1
+
+    def use(self):
+        self.equip()
+        return
+    
+    def equip(self):
+        return
 
 class Weapon(Item):
     """
 
     """
-    def __init__(self, name, description, value, strength):
-        super().__init__(name, description, value)
-        self.strength = strength
+    def __init__(self, name, description):
+        super().__init__(name, description,)
+        self.strength = 1
+
+    def use(self):
+        self.equip()
+        return
+    
+    def equip(self):
+        return
         
         
         

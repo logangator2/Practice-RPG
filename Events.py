@@ -1,6 +1,7 @@
 
 import random
 import math
+import Item
 import Character
 
 def battle(player_team, enemy_list):
@@ -52,7 +53,7 @@ def battle(player_team, enemy_list):
             
         # request user input
         for p in player_team:
-            p_in = input("What would you like {} to do? ".format(p.name))
+            p_in = p_in = input("What would you like {} to do? Type 'Help' for commands. ".format(p.name))
             check = battle_command_checker(p_in.lower(), p, enemy_list)
 
         # FIXME: All code in this function below this comment needs to be changed when there len(player_team) > 1
@@ -65,8 +66,6 @@ def battle(player_team, enemy_list):
                 if tmp_player.knockout:
                     print("You blacked out!") # FIXME: change to 'your team' later on - could check w/ if statement
                     return False
-                else:
-                    print("{} has {} health.".format(tmp_player.name, tmp_player.c_health))
     return False
 
 def battle_command_checker(command, player, enemy_list):
@@ -88,7 +87,7 @@ def battle_command_checker(command, player, enemy_list):
         return 2
 
     elif (command == "help") or (command == "h"):
-        print("You may enter in any of these commands: fight, defend, status, or run") # FIXME: Update as necessary - items next
+        print("You may enter in any of these commands: fight, items, defend, status, or run")
         print("You may use the first letter of each command instead.")
         return 1
 
@@ -109,6 +108,22 @@ def battle_command_checker(command, player, enemy_list):
     elif (command == "status") or (command == "s"):
         player.information()
         return 1
+
+    elif (command == "items") or (command == "i"):
+        for item in player.backpack:
+            print(item.name)
+        selection = input("Which item would you like to use? ")
+        counter = 0
+        for item in player.backpack:
+            if selection.lower() == item.name.lower():
+                item.use(player)
+                player.backpack.remove(item)
+                break
+            elif (selection.lower() != item.name.lower()) and (player.backpack[counter] == player.backpack[-1]):
+                print("Invalid selection! Please try again.")
+                return 1
+            counter += 1
+        return 3
 
     elif (command == "fight") or (command == "f"):
         target = input("Which enemy would you like to attack? ")
@@ -158,7 +173,7 @@ def slime_generator():
     n_slimes = random.randint(1, 4)
 
     for n in range(n_slimes):
-        slime = Character.Enemy("Slime {}".format(n + 1), 10, "weak")
+        slime = Character.Enemy("Slime {}".format(n + 1), 5, "weak")
         enemy_list.append(slime)
     return enemy_list        
 
@@ -173,7 +188,7 @@ def event_picker(player_team):
 
     # FIXME: May want to just return a randomized selection of possible events so events aren't repeated
 
-    rn = random.randint(1, 6)
+    rn = random.randint(1, 7)
 
     if rn == 1:
         slime_event(player_team)
@@ -182,7 +197,7 @@ def event_picker(player_team):
     elif rn == 3:
         god_event(player_team)
     elif rn == 4:
-        print("\n{} has fallen in a hole.\n".format(player_team[0]))
+        print("\n{} has fallen in a hole.".format(player_team[0]))
         player_team[0].damage(5)
     elif rn == 5:
         print("\nYou have a pleasant stroll along the road. The road is quiet.")
@@ -190,26 +205,75 @@ def event_picker(player_team):
         g = random.randint(1, 100)
         player_team[0].gold += g
         print("\nYou found {} gold on the road!".format(g))
+    elif rn == 7:
+        goblin_event(player_team)
     
     # Ideas
         # gain an ally
         # arrive in a town
-        # goblins attack
         # bandits
-        # find chest w/ items
         # two groups are fighting and you have to choose between the two
         # troll asks you a riddle and if you don't know the answer you fight
+
+def chest(player_team):
+    """
+    Generates a chest.
+    """
+    c = random.randint(0, 2)
+    c = 2
+    if c == 0:
+        print("Not here yet.")
+    elif c == 1:
+        print("Not here yet.")
+    elif c == 2:
+        potions = ["Minor", "Normal", "Major"]
+        t = random.choice(potions)
+        item = Item.Healing_Potion("{} Healing Potion".format(t), "Heals a character.", t)
+
+    g = random.randint(100, 200)
+    print("You found {} gold!".format(g))
+    player_team[0].gold += g
+    print("You found {}!".format(item.name))
+    player_team[0].backpack.append(item)
+
+    return
 
 def boss_event(player_team):
     """
     Runs the boss event
     """
-    enemy_list = [Character.Enemy("Dragon", 50, "boss")]
+    enemy_list = [Character.Enemy("Dragon", 65, "boss")]
     if battle(player_team, enemy_list):
         player_team[0].gold += 1000
         print("\nYou've saved the surrounding area! You've earned {} gold.".format(1000))
     else:
         print("\nThe dragon has incinerated you.")
+    return
+
+def goblin_event(player_team):
+    """
+    Runs the goblin event.
+    """
+    enemy_list = []
+    check = True
+    while (check):
+        answer = (input("\nYou hear voices in the forest to your left. Would you like to investigate? Y/N ")).lower()
+        if (answer == "yes") or (answer == "y"):
+            print("\nGoblins are arguing over a chest, but stop and draw thier weapons when they see you.")
+            for n in range(3):
+                goblin = Character.Enemy("Goblin {}".format(n + 1), 10, "annoying")
+                enemy_list.append(goblin)
+            if battle(player_team, enemy_list):
+                print("\nYou found a chest!")
+                chest(player_team)
+            check = False
+            break
+        elif (answer == "no") or (answer == "n"):
+            print("\nIt's probably nothing. You're fine, right?")
+            check = False
+            break
+        else:
+            print("\nInvalid command! Try again.")
     return
 
 def baby_event(player_team):
@@ -242,7 +306,7 @@ def god_event(player_team):
     Effects:
         Heals up 15% of healthof each p in player_team
     """
-    print("\nYou have stumbled into a forgiving god's terrain.\n")
+    print("\nYou have wandered into a forgiving god's terrain.")
     for p in player_team:
         value = math.ceil(0.15 * p.health)
         p.healing(value)
@@ -253,7 +317,7 @@ def best_god_event(player_team):
     Effects:
         Heals up 15% of healthof each p in player_team
     """
-    print("\nYou have stumbled into a forgiving god's terrain.\n")
+    print("\nYou have wandered into a forgiving god's terrain.")
     for p in player_team:
         p.healing(p.health)
 

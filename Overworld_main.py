@@ -69,6 +69,8 @@ def main():
     rest_count = 3
     rest_test = True
 
+    print("\nYou are walking along a road.")
+
     # main game loop
     while (check):
         
@@ -111,9 +113,8 @@ def main():
 
         # continue adventure
         else:
-            print("\nYou are walking along a road.\n")
             # ask for player input
-            command = input("What would you like to do? Type 'Help' for commands. ")
+            command = input("\nWhat would you like to do? Type 'Help' for commands. ")
             command = command.lower()
                        
             # display possible commands
@@ -133,10 +134,14 @@ def main():
             elif (command == "status") or (command == "s"):
                 for p in player_team:
                     p.information()
+                print() # formatting
 
             # trigger event
             elif (command == "move") or (command == "m"):
                 print("\nYou move along the road.")
+
+                # testing area
+                # Events.goblin_event(player_team)
 
                 # new player road
                 if event_counter == 0:
