@@ -29,11 +29,8 @@ def main():
     Main game loop of the Practice RPG
     """
 
-    # main loop checker
-    check = True
-
     # loop to select whether to continue from old save
-    while (check):
+    while (True):
         cmd = input("Please select an option: 1: New Game, 2: Continue Game, 3: Quit. ")
 
         if cmd == "1":
@@ -46,7 +43,6 @@ def main():
             print("\nWelcome, {}. You have {} health.".format(player.name, player.c_health))
 
             event_counter = 0
-            check = False
             break
 
         if cmd == "2":
@@ -57,6 +53,7 @@ def main():
             """
             print("Sorry! Save files aren't here yet!")
             # FIXME: add break when you put in save files
+
         if cmd == "3":
             print("\nQuitting...")
             return
@@ -163,7 +160,7 @@ def main():
                     print("\nYou're not tired!")
                 else:
                     rest_count -= 1
-                    print("\nYou take a rest.")
+                    print("\nYou take a rest. You have {} rests remaining.".format(rest_count))
                     for p in player_team:
                         p.healing(math.ceil((random.randint(10, 60)/100) * p.health))
                     event_counter += 1

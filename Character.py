@@ -324,15 +324,20 @@ class Enemy(Character):
         Effects:
             Other character has their current health decreased by a random amount, dependent on enemy tier
         """
-        crit_chance = random.randint(1, 20)
-        if (crit_chance == 20):
-            other.damage(int(20 * self.tier))
-            print("A critical hit! {} did {} damage to {}".format(self.name, 10, other.name))
-            return
+        if not other.defending:
+            crit_chance = random.randint(1, 20)
+            if (crit_chance == 20):
+                dmg = int(20 * self.tier)
+                print("A critical hit! {} did {} damage to {}".format(self.name, dmg, other.name))
+                other.damage(dmg)
+                return
+            else:
+                dmg = random.randint(1, int(10 * self.tier))
+                print("{} did {} damage to {}".format(self.name, int(dmg), other.name))
+                other.damage(dmg)
         else:
-            dmg = random.randint(1, int(10 * self.tier))
-            print("{} did {} damage to {}".format(self.name, int(dmg), other.name))
-            other.damage(dmg)
+            print("{} made {}'s defenses lower.".format(self.name, other.name))
+            other.damage(1)
         return
 
     def calc_experience(self, player_team):

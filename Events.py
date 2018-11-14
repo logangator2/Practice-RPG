@@ -53,7 +53,7 @@ def battle(player_team, enemy_list):
             
         # request user input
         for p in player_team:
-            p_in = p_in = input("What would you like {} to do? Type 'Help' for commands. ".format(p.name))
+            p_in = p_in = input("What would you like {} to do? ".format(p.name))
             check = battle_command_checker(p_in.lower(), p, enemy_list)
 
         # FIXME: All code in this function below this comment needs to be changed when there len(player_team) > 1
@@ -110,20 +110,24 @@ def battle_command_checker(command, player, enemy_list):
         return 1
 
     elif (command == "items") or (command == "i"):
-        for item in player.backpack:
-            print(item.name)
-        selection = input("Which item would you like to use? ")
-        counter = 0
-        for item in player.backpack:
-            if selection.lower() == item.name.lower():
-                item.use(player)
-                player.backpack.remove(item)
-                break
-            elif (selection.lower() != item.name.lower()) and (player.backpack[counter] == player.backpack[-1]):
-                print("Invalid selection! Please try again.")
-                return 1
-            counter += 1
-        return 3
+        if len(player.backpack) != 0:
+            for item in player.backpack:
+                print(item.name)
+            selection = input("Which item would you like to use? ")
+            counter = 0
+            for item in player.backpack:
+                if selection.lower() == item.name.lower():
+                    item.use(player)
+                    player.backpack.remove(item)
+                    break
+                elif (selection.lower() != item.name.lower()) and (player.backpack[counter] == player.backpack[-1]):
+                    print("Invalid selection! Please try again.")
+                    return 1
+                counter += 1
+            return 3
+        else:
+            print("You have no items! Please try again.")
+            return 1
 
     elif (command == "fight") or (command == "f"):
         target = input("Which enemy would you like to attack? ")
@@ -137,7 +141,7 @@ def battle_command_checker(command, player, enemy_list):
                     enemy_list.remove(e)
                 return 3
 
-        # FIXME: add in number options
+        # making sure enemy_num is an integer before testing logic
         try:
             enemy_num = int(target)
         except:
@@ -165,7 +169,6 @@ def battle_command_checker(command, player, enemy_list):
 def slime_generator():
     """
     Generates a random number of slime enemies
-    # NOTE: intended to scale to generating more types of enemies
     Returns:
         enemy_list: a list of enemy slimes
     """
@@ -173,7 +176,7 @@ def slime_generator():
     n_slimes = random.randint(1, 4)
 
     for n in range(n_slimes):
-        slime = Character.Enemy("Slime {}".format(n + 1), 5, "weak")
+        slime = Character.Enemy("Slime", 5, "weak")
         enemy_list.append(slime)
     return enemy_list        
 
@@ -186,7 +189,7 @@ def event_picker(player_team):
         calls one of the specified events events
     """
 
-    # FIXME: May want to just return a randomized selection of possible events so events aren't repeated
+    # NOTE: May want to just return a randomized selection of possible events so events aren't repeated
 
     rn = random.randint(1, 7)
 
@@ -220,7 +223,7 @@ def chest(player_team):
     Generates a chest.
     """
     c = random.randint(0, 2)
-    c = 2
+    c = 2 # FIXME: delete when armor and weapons implemented
     if c == 0:
         print("Not here yet.")
     elif c == 1:
@@ -242,7 +245,7 @@ def boss_event(player_team):
     """
     Runs the boss event
     """
-    enemy_list = [Character.Enemy("Dragon", 65, "boss")]
+    enemy_list = [Character.Enemy("Dragon", 65, "boss")] # FIXME: make modular and add more bosses
     if battle(player_team, enemy_list):
         player_team[0].gold += 1000
         print("\nYou've saved the surrounding area! You've earned {} gold.".format(1000))
@@ -259,9 +262,9 @@ def goblin_event(player_team):
     while (check):
         answer = (input("\nYou hear voices in the forest to your left. Would you like to investigate? Y/N ")).lower()
         if (answer == "yes") or (answer == "y"):
-            print("\nGoblins are arguing over a chest, but stop and draw thier weapons when they see you.")
-            for n in range(3):
-                goblin = Character.Enemy("Goblin {}".format(n + 1), 10, "annoying")
+            print("\nGoblins are arguing over a chest, but stop and draw their weapons when they see you.")
+            for n in range(random.randint(2,4)):
+                goblin = Character.Enemy("Goblin", 10, "annoying")
                 enemy_list.append(goblin)
             if battle(player_team, enemy_list):
                 print("\nYou found a chest!")
@@ -339,6 +342,7 @@ def easy_slime_event(player_team):
         player_team: list of player Character objects
     """
 
+    # inconsistent slime health done on purpose for easy slime event
     enemy_list = [Character.Enemy("Slime 1", 10, "weak"), Character.Enemy("Slime 2", 10, "weak")]
     battle(player_team, enemy_list)
     return
