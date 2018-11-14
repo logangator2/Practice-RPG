@@ -176,7 +176,7 @@ def slime_generator():
     n_slimes = random.randint(1, 4)
 
     for n in range(n_slimes):
-        slime = Character.Enemy("Slime", 5, "weak")
+        slime = Character.Enemy("Slime {}".format(n + 1), 5, "weak")
         enemy_list.append(slime)
     return enemy_list        
 
@@ -263,8 +263,8 @@ def goblin_event(player_team):
         answer = (input("\nYou hear voices in the forest to your left. Would you like to investigate? Y/N ")).lower()
         if (answer == "yes") or (answer == "y"):
             print("\nGoblins are arguing over a chest, but stop and draw their weapons when they see you.")
-            for n in range(random.randint(2,4)):
-                goblin = Character.Enemy("Goblin", 10, "annoying")
+            for n in range((random.randint(2,4))):
+                goblin = Character.Enemy("Goblin {}".format(n + 1), 10, "annoying")
                 enemy_list.append(goblin)
             if battle(player_team, enemy_list):
                 print("\nYou found a chest!")
