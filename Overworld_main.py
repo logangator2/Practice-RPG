@@ -49,7 +49,7 @@ def main():
             # open file
             # print("\nWelcome back!")
             """
-            Need player list, event_counter, 
+            Need player object list, event_counter, 
             """
             print("Sorry! Save files aren't here yet!")
             # FIXME: add break when you put in save files
@@ -70,13 +70,6 @@ def main():
 
     # main game loop
     while (check):
-        
-        # check if enough events have occurred
-        if event_counter == 30:
-            Events.boss_event(player_team) # Final event
-            print("\nYou've had quite an adventure!\n")
-            check = False
-            break
             
         # check if players are still alive
         check = still_alive(player_team)
@@ -92,6 +85,13 @@ def main():
                 print() # formatting
                 p.healing(1)
                 print("\n{} has awakened!".format(p.name))
+
+        # check if enough events have occurred
+        if event_counter == 30:
+            Events.boss_event(player_team) # Final event
+            print("\nYou've had quite an adventure!\n")
+            check = False
+            break
 
         # if all players are knocked out, have them lose 15% of their average gold each
         lost_gold = 0

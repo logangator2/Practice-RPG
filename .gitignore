@@ -5,3 +5,4 @@ __pycache__/Enemy.cpython-36.pyc
 __pycache__/Events.cpython-36.pyc
 *.pyc
 *.pyc
+.vscode/settings.json

@@ -1,6 +1,7 @@
 
 import random
 import math
+import time
 import Item
 import Character
 
@@ -63,6 +64,7 @@ def battle(player_team, enemy_list):
         if check == 3:
             for e in enemy_list:
                 e.normal_attack(tmp_player) # ADD: add random moves for diff enemies
+                #time.sleep(1.5)
                 if tmp_player.knockout:
                     print("You blacked out!") # FIXME: change to 'your team' later on - could check w/ if statement
                     return False
@@ -137,6 +139,7 @@ def battle_command_checker(command, player, enemy_list):
             if e.name.lower() == target.lower():
                 player.normal_attack(e)
                 print()
+                #time.sleep(1.5)
                 if e.dead:
                     enemy_list.remove(e)
                 return 3
@@ -151,6 +154,7 @@ def battle_command_checker(command, player, enemy_list):
         if (enemy_num > 0) and (enemy_num <= len(enemy_list)):
             player.normal_attack(enemy_list[enemy_num - 1])
             print()
+            #time.sleep(1.5)
             if enemy_list[enemy_num - 1].dead:
                 enemy_list.remove(enemy_list[enemy_num - 1])
             return 3
