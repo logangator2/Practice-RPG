@@ -6,7 +6,7 @@ This is a text-based RPG with random events, written in Python version 3. Run by
 
 ## Authors
 
-Maxwell Logan
+Maxwell Logan - CIS Major at the University of Oregon
 
 ## Contact
 
