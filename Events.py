@@ -2,6 +2,7 @@
 import random
 import math
 import time
+
 import Item
 import Character
 
@@ -53,8 +54,10 @@ def battle(player_team, enemy_list):
         print()
             
         # request user input
+        if player_team[0].level == 1:
+            print("There are different commands that you can use in battle.")
         for p in player_team:
-            p_in = p_in = input("What would you like {} to do? ".format(p.name))
+            p_in = input("What would you like {} to do? ".format(p.name))
             check = battle_command_checker(p_in.lower(), p, enemy_list)
 
         # FIXME: All code in this function below this comment needs to be changed when there len(player_team) > 1
@@ -64,7 +67,7 @@ def battle(player_team, enemy_list):
         if check == 3:
             for e in enemy_list:
                 e.normal_attack(tmp_player) # ADD: add random moves for diff enemies
-                #time.sleep(1.5)
+                time.sleep(1.5)
                 if tmp_player.knockout:
                     print("You blacked out!") # FIXME: change to 'your team' later on - could check w/ if statement
                     return False
@@ -139,7 +142,7 @@ def battle_command_checker(command, player, enemy_list):
             if e.name.lower() == target.lower():
                 player.normal_attack(e)
                 print()
-                #time.sleep(1.5)
+                time.sleep(1.5)
                 if e.dead:
                     enemy_list.remove(e)
                 return 3
@@ -154,7 +157,7 @@ def battle_command_checker(command, player, enemy_list):
         if (enemy_num > 0) and (enemy_num <= len(enemy_list)):
             player.normal_attack(enemy_list[enemy_num - 1])
             print()
-            #time.sleep(1.5)
+            time.sleep(1.5)
             if enemy_list[enemy_num - 1].dead:
                 enemy_list.remove(enemy_list[enemy_num - 1])
             return 3
@@ -192,10 +195,10 @@ def event_picker(player_team):
     Effects:
         calls one of the specified events events
     """
-
+    time.sleep(1.5) # For UI
     # NOTE: May want to just return a randomized selection of possible events so events aren't repeated
 
-    rn = random.randint(1, 7)
+    rn = random.randint(1, 8)
 
     if rn == 1:
         slime_event(player_team)
@@ -214,6 +217,8 @@ def event_picker(player_team):
         print("\nYou found {} gold on the road!".format(g))
     elif rn == 7:
         goblin_event(player_team)
+    elif rn == 8:
+        armor_event(player_team)
     
     # Ideas
         # gain an ally
@@ -247,7 +252,7 @@ def chest(player_team):
 
 def boss_event(player_team):
     """
-    Runs the boss event
+    Runs the boss event. Spawns boss.
     """
     enemy_list = [Character.Enemy("Dragon", 65, "boss")] # FIXME: make modular and add more bosses
     if battle(player_team, enemy_list):
@@ -257,13 +262,30 @@ def boss_event(player_team):
         print("\nThe dragon has incinerated you.")
     return
 
+def armor_event(player_team):
+    """
+    Runs the armor event. Generates a piece of low-level armor.
+    """
+    print("You see a piece of armor lying on the ground. You pick it up.")
+    r = random.randint(0, 3)
+    if r == 0:
+        item = Item.Armor("Leather Helmet", "A leather helmet to prevent light injuries.", "Leather", "helmet", player_team)
+    elif r == 1:
+        item = Item.Armor("Leather Chest Piece", "Leather armor to prevent light injuries.", "Leather", "torso", player_team)
+    elif r == 2:
+        item = Item.Armor("Leather Pants", "Essentially leggings.", "Leather", "leggings", player_team)
+    elif r == 3:
+        item = Item.Armor("Leather Boots", "Stylish leather boots. Just do it.", "Leather", "boots", player_team)
+
+    player_team[0].backpack.append(item)
+    return
+
 def goblin_event(player_team):
     """
     Runs the goblin event.
     """
     enemy_list = []
-    check = True
-    while (check):
+    while (True):
         answer = (input("\nYou hear voices in the forest to your left. Would you like to investigate? Y/N ")).lower()
         if (answer == "yes") or (answer == "y"):
             print("\nGoblins are arguing over a chest, but stop and draw their weapons when they see you.")
@@ -273,11 +295,9 @@ def goblin_event(player_team):
             if battle(player_team, enemy_list):
                 print("\nYou found a chest!")
                 chest(player_team)
-            check = False
             break
         elif (answer == "no") or (answer == "n"):
             print("\nIt's probably nothing. You're fine, right?")
-            check = False
             break
         else:
             print("\nInvalid command! Try again.")
@@ -311,7 +331,7 @@ def god_event(player_team):
     """
     Runs forgiving god's event, also used to heal up new players.
     Effects:
-        Heals up 15% of healthof each p in player_team
+        Heals up 15% of health of each p in player_team
     """
     print("\nYou have wandered into a forgiving god's terrain.")
     for p in player_team:

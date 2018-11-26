@@ -1,6 +1,8 @@
 import random
 import math
 
+import Item
+
 class Character:
     """
     Character class to hold and react to the simulated world around them
@@ -126,7 +128,7 @@ class Ally(Character):
     """
     An Ally is a character that is player controlled.
     """
-    def __init__(self, name, health, level, experience, strength, gold):
+    def __init__(self, name, health, level, experience, strength, defense, gold):
         """
         Values:
             * See Character for description of inherited variables *
@@ -138,26 +140,30 @@ class Ally(Character):
         super().__init__(name, health)
         self.knockout = False
         self.strength = strength
+        self.defense = defense
         self.experience = experience
         self.level = level
         self.gold = gold
 
         self.backpack = [] # FIXME: maybe a dict?
 
+        self.mod_defense = defense
+
         #self.weapon = None
         #self.shield = None
         #self.r_weapon = None
 
-        #self.helmet = None
-        #self.torso = None
-        #self.leggings = None
-        #self.boots = None
+        self.helmet = None
+        self.torso = None
+        self.leggings = None
+        self.boots = None
 
     def information(self):
         print("\n\nName: {}".format(self.name))
         print("Health: {}/{}".format(self.c_health, self.health))
         print("Level: {}, Progress to Next Level: {}/{}".format(self.level, self.experience, self.next_level()))
         print("Strength: {}".format(self.strength))
+        print("Defense: {}".format(self.mod_defense))
         print("Knocked Out: {}".format(self.knockout))
         print("Gold: {}".format(self.gold))
         print("Backpack: ")
@@ -194,6 +200,7 @@ class Ally(Character):
                 # FIXME: add in stat gains here - based on level?
                 self.health += 5
                 self.strength += random.randint(1, 2)
+                self.defense += random.randint(1, 2)
 
                 self.c_health = self.health
                 self.level += 1
@@ -201,6 +208,46 @@ class Ally(Character):
                 print("{} was healed to full health!".format(self.name))
             else:
                 break
+        return
+
+    def equip(self, item):
+        """
+        Equips specific item to appropriate slot
+        Args:
+            item: Item object
+        Effects:
+            sets item to appropriate slot, then modifies appropriate stat
+        """
+        # check instance
+        if isinstance(item, Item.Armor):
+            # FIXME: generic way
+            #if self.(item.a_type) != None:
+            #    self.mod_defense = self.mod_defense - self.item.a_type.stat
+
+            # FIXME: make more generic
+            if item.a_type == "helmet":
+                # NOTE: check if armor already equipped in slot, same for each armor type slot
+                if self.helmet != None:
+                    self.mod_defense = self.mod_defense - self.helmet.stat
+                self.helmet = item
+            elif item.a_type == "torso":
+                if self.torso != None:
+                    self.mod_defense = self.mod_defense - self.torso.stat
+                self.torso = item
+            elif item.a_type == "leggings":
+                if self.leggings != None:
+                    self.mod_defense = self.mod_defense - self.leggings.stat
+                self.leggings = item
+            elif item.a_type == "boots":
+                if self.boots != None:
+                    self.mod_defense = self.mod_defense - self.boots.stat
+                self.boots = item
+            # NOTE: doesn't need to catch inaccurate input because item wouldn't create
+
+            self.mod_defense = self.mod_defense + item.stat
+            print("\nYou equipped {}".format(item.name))
+        else:
+            print("This item can't be equipped!")
         return
 
     def damage(self, value):
@@ -327,13 +374,17 @@ class Enemy(Character):
         if not other.defending:
             crit_chance = random.randint(1, 20)
             if (crit_chance == 20):
-                dmg = int(20 * self.tier)
+                dmg = int(self.tier * 20 * (other.level / 2) - other.mod_defense)
+                if dmg < 0:
+                    dmg = random.randint(0, 1)
                 print("A critical hit! {} did {} damage to {}".format(self.name, dmg, other.name))
                 other.damage(dmg)
                 return
             else:
-                dmg = random.randint(1, int(10 * self.tier))
-                print("{} did {} damage to {}".format(self.name, int(dmg), other.name))
+                dmg = int(self.tier * random.randint(1, int(10 * (other.level / 2))) - other.mod_defense)
+                if dmg <= 0:
+                    dmg = random.randint(0, 1)
+                print("{} did {} damage to {}".format(self.name, dmg, other.name))
                 other.damage(dmg)
         else:
             print("{} made {}'s defenses lower.".format(self.name, other.name))

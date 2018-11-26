@@ -1,7 +1,9 @@
 
 import random
 import math
+import time
 
+import Item
 import Character
 import Events
 
@@ -36,7 +38,7 @@ def main():
         if cmd == "1":
             # create player character
             p_name = input("Enter your name: ")
-            player = Character.Ally(p_name, 20, 1, 0, 1, 10)
+            player = Character.Ally(p_name, 20, 1, 0, 1, 0, 10)
             player_team = [player]
 
             # opening message
@@ -86,13 +88,6 @@ def main():
                 p.healing(1)
                 print("\n{} has awakened!".format(p.name))
 
-        # check if enough events have occurred
-        if event_counter == 30:
-            Events.boss_event(player_team) # Final event
-            print("\nYou've had quite an adventure!\n")
-            check = False
-            break
-
         # if all players are knocked out, have them lose 15% of their average gold each
         lost_gold = 0
         if all_ko:
@@ -116,7 +111,7 @@ def main():
                        
             # display possible commands
             if (command == "help") or (command == "h"):
-                print("\nYou may enter in any of these commands: move, rest, status, quit")
+                print("\nYou may enter in any of these commands: move, rest, status, items, or quit")
                 print("You may use the first letter of each command instead.")
        
             # secret testing function
@@ -124,6 +119,7 @@ def main():
                 for p in player_team:
                     p.c_health = 99999
                     p.strength = 99999
+                    #p.defense = 99999
                     # FIXME: add speed modifier 
                 print("\nult enabled")
 
@@ -133,15 +129,29 @@ def main():
                     p.information()
                 print() # formatting
 
+            elif (command == "items") or (command == "i"):
+                if len(player_team[0].backpack) != 0:
+                    Item.manage(player_team[0])
+                else:
+                    print("\nYou have no items!")
+
             # trigger event
             elif (command == "move") or (command == "m"):
                 print("\nYou move along the road.")
 
+                # check if enough events have occurred
+                if event_counter == 30:
+                    Events.boss_event(player_team) # Final event
+                    print("\nYou've had quite an adventure!\n")
+                    check = False
+                    break
+
                 # testing area
-                # Events.goblin_event(player_team)
+                #Events.armor_event(player_team)
 
                 # new player road
                 if event_counter == 0:
+                    time.sleep(1.5)
                     Events.easy_slime_event(player_team)
                     event_counter += 1
                 elif event_counter == 1:
@@ -168,11 +178,11 @@ def main():
             # quit game
             elif(command == "quit") or (command == "q"):
                 # FIXME: add save option before quitting
-                check = False
                 print("\nQuitting...")
                 break
             else:
                 print("\nInvalid command! Please retry.")
+            time.sleep(1.5)
     return
 
 if __name__ == '__main__':
