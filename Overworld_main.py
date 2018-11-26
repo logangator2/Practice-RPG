@@ -73,6 +73,13 @@ def main():
     # main game loop
     while (check):
             
+        # check if enough events have occurred
+        if event_counter == 30:
+            Events.boss_event(player_team) # Final event
+            print("\nYou've had quite an adventure!\n")
+            check = False
+            break
+
         # check if players are still alive
         check = still_alive(player_team)
         if check == False:
@@ -138,13 +145,6 @@ def main():
             # trigger event
             elif (command == "move") or (command == "m"):
                 print("\nYou move along the road.")
-
-                # check if enough events have occurred
-                if event_counter == 30:
-                    Events.boss_event(player_team) # Final event
-                    print("\nYou've had quite an adventure!\n")
-                    check = False
-                    break
 
                 # testing area
                 #Events.armor_event(player_team)
