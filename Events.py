@@ -266,7 +266,7 @@ def boss_event(player_team):
         player_team[0].gold += 1000
         print("\nYou've saved the surrounding area! You've earned {} gold.".format(1000))
     else:
-        print("\nThe dragon has incinerated you.")
+        print("\nYou narrowly escape the dragon's flames, but the surrounding area has been burned to the ground.")
     return
 
 def armor_event(player_team):
