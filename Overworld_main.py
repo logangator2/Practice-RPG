@@ -7,6 +7,13 @@ import Item
 import Character
 import Events
 
+def toggle_sleep():
+    """
+    Time.sleep harness to increase speed of testing.
+
+    """
+    return
+
 def still_alive(player_team):
     """
     Checks if player team is still alive.
@@ -44,7 +51,7 @@ def main():
             # opening message
             print("\nWelcome, {}. You have {} health.".format(player.name, player.c_health))
 
-            event_counter = 0
+            event_counter = 1
             break
 
         if cmd == "2":
@@ -74,11 +81,11 @@ def main():
     while (check):
             
         # check if enough events have occurred
-        if event_counter == 30:
-            Events.boss_event(player_team) # Final event
-            print("\nYou've had quite an adventure!\n")
+        if event_counter % 30 == 0:
+            Events.boss_event(player_team) # Trigger boss event
+            print("\nYou've had quite an adventure so far!")
             check = False
-            break
+            #break
 
         # check if players are still alive
         check = still_alive(player_team)
@@ -147,7 +154,7 @@ def main():
                 print("\nYou move along the road.")
 
                 # testing area
-                #Events.armor_event(player_team)
+                #Events.goblin_event(player_team)
 
                 # new player road
                 if event_counter == 0:

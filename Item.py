@@ -114,6 +114,8 @@ class Armor(Equipment):
         self.tier = tiers[tier]
         self.stat = self.scale(player_team)
 
+        self.name = "+{} {}".format(self.stat, self.name)
+
 class Weapon(Equipment):
     """
     Weapon class that increases Ally strength
@@ -124,7 +126,7 @@ class Weapon(Equipment):
     """
     def __init__(self, name, description, tier, w_type, player_team):
         super().__init__(name, description)
-        tiers = {"Wood" : 0.25, "Stone" : 0.5, "Bronze" : 0.75, "Iron" : 1, "Steel" : 1.5}
+        tiers = {"Wood" : 1, "Stone" : 2, "Bronze" : 3, "Iron" : 4, "Steel" : 5}
         # w_types = {"Dagger" : , "Shortsword" : ,"Longsword" : , "Axe" : , "Katana" : ,
         #  "Trident" : , "Katana" : , "" : }
         w_types = []
@@ -188,7 +190,7 @@ def manage(player):
                     time.sleep(1.5)
 
             else:
-                if (item == player.backpack[-1]):
+                if (item == player.backpack[-1]): # FIXME: player sees this message even if item is in inventory sometimes
                     print("That item isn't in your backpack!")
                     time.sleep(1.5)
     return      

@@ -231,12 +231,20 @@ def chest(player_team):
     """
     Generates a chest.
     """
-    c = random.randint(0, 2)
-    c = 2 # FIXME: delete when armor and weapons implemented
+    c = random.randint(1, 2)
+    #c = 1 # FIXME: delete when armor and weapons implemented
     if c == 0:
         print("Not here yet.")
-    elif c == 1:
-        print("Not here yet.")
+    # armor
+    elif c == 1: # FIXME: names are weird
+        a_types = ["Chain", "Plate"]
+        a_names = ["helmet", "torso", "leggings", "boots"]
+
+        t = random.choice(a_types)
+        p = random.choice(a_names)
+
+        item = Item.Armor("{} {}".format(t, p.capitalize()), "A sturdy piece of armor.", t, p, player_team)
+    # potion    
     elif c == 2:
         potions = ["Minor", "Normal", "Major"]
         t = random.choice(potions)
@@ -247,7 +255,6 @@ def chest(player_team):
     player_team[0].gold += g
     print("You found {}!".format(item.name))
     player_team[0].backpack.append(item)
-
     return
 
 def boss_event(player_team):
