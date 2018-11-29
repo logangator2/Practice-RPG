@@ -157,11 +157,11 @@ def main():
                 #Events.goblin_event(player_team)
 
                 # new player road
-                if event_counter == 0:
+                if event_counter == 1:
                     time.sleep(1.5)
                     Events.easy_slime_event(player_team)
                     event_counter += 1
-                elif event_counter == 1:
+                elif event_counter == 2:
                     Events.best_god_event(player_team)
                     event_counter += 1
 

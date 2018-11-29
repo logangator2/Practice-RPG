@@ -188,7 +188,7 @@ def manage(player):
                 else:
                     print("\nInvalid command!")
                     time.sleep(1.5)
-
+                    
             else:
                 if (item == player.backpack[-1]): # FIXME: player sees this message even if item is in inventory sometimes
                     print("That item isn't in your backpack!")

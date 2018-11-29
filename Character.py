@@ -176,7 +176,7 @@ class Ally(Character):
         NOTE: level formula from http://howtomakeanrpg.com/a/how-to-make-an-rpg-levels.html
         Used by gain_xp to determine whether a character has leveled up
         Returns:
-            n_level: int value of the next level
+            n_level: int exp value of the next level
         """
         exponent = 1.5
         n_level = math.floor(100 * (self.level ** exponent))
@@ -197,6 +197,7 @@ class Ally(Character):
         # check if level gain
         while (True):
             if self.experience >= self.next_level():
+                self.experience = self.experience - self.next_level()
                 # FIXME: add in stat gains here - based on level?
                 self.health += 5
                 self.strength += random.randint(1, 2)
