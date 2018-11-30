@@ -3,6 +3,7 @@ import random
 import math
 import time
 
+import Overworld_main
 import Item
 import Character
 
@@ -69,7 +70,10 @@ def battle(player_team, enemy_list):
                 e.normal_attack(tmp_player) # ADD: add random moves for diff enemies
                 time.sleep(1.5)
                 if tmp_player.knockout:
-                    print("You blacked out!") # FIXME: change to 'your team' later on - could check w/ if statement
+                    print("{} blacked out!".format(tmp_player)) # FIXME: change to 'your team' later on - could check w/ if statement
+                    return False
+                if tmp_player.dead:
+                    print("{} died!".format(tmp_player))
                     return False
     return False
 
@@ -266,7 +270,10 @@ def boss_event(player_team):
         player_team[0].gold += 1000
         print("\nYou've saved the surrounding area! You've earned {} gold.".format(1000))
     else:
-        print("\nYou narrowly escape the dragon's flames, but the surrounding area has been burned to the ground.")
+        if not Overworld_main.still_alive(player_team):
+            print("\nThe dragon has burnt you and the surrounding area to ashes.")
+        else:
+            print("\nYou narrowly escape the dragon's flames, but the surrounding area has been burned to the ground.")
     return
 
 def armor_event(player_team):

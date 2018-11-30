@@ -83,9 +83,12 @@ def main():
         # check if enough events have occurred
         if event_counter % 30 == 0:
             Events.boss_event(player_team) # Trigger boss event
-            print("\nYou've had quite an adventure so far!")
+            if not still_alive(player_team):
+                print("\nYour adventure is over.")
+                break
+            else:
+                print("\nYou've had quite an adventure so far!")
             event_counter += 1
-            #break
 
         # check if players are still alive
         check = still_alive(player_team)
@@ -173,7 +176,10 @@ def main():
 
             # resting event
             elif (command == "rest") or (command == "r"):
-                if rest_count <= 0:
+                if player_team[0].c_health == player_team[0].health:
+                    print("\nYou're already at full health!")
+                    continue
+                elif rest_count <= 0:
                     print("\nYou're not tired!")
                 else:
                     rest_count -= 1

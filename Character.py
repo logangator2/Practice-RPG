@@ -283,7 +283,10 @@ class Ally(Character):
             The character regains health up to their maximum by the value given.
         """
         if self.dead == False:
-            if value >= self.health:
+            if self.c_health == self.health:
+                print("{} is already at full health and cannot be healed any more!".format(self.name))
+                return
+            elif value >= self.health:
                 self.knockout = False
                 self.c_health = self.health
                 print("{} was healed to full health.".format(self.name))
@@ -382,13 +385,13 @@ class Enemy(Character):
                 other.damage(dmg)
                 return
             else:
-                dmg = int(self.tier * random.randint(1, int(10 * (other.level / 2))) - other.mod_defense)
+                dmg = int(self.tier * random.randint(1, int(10 * (other.level / 2))) - other.mod_defense + other.level)
                 if dmg <= 0:
                     dmg = random.randint(0, 1)
                 print("{} did {} damage to {}".format(self.name, dmg, other.name))
                 other.damage(dmg)
         else:
-            print("{} made {}'s defenses lower.".format(self.name, other.name))
+            print("{} lowered {}'s defenses.".format(self.name, other.name))
             other.damage(1)
         return
 
@@ -407,7 +410,7 @@ class Enemy(Character):
         avg_level = math.ceil(levels/len(player_team))
 
         # calculate xp value
-        value = (50 * avg_level) * self.tier # FIXME: on higher levels this generates too much xp
+        value = (50 * avg_level) * self.tier
         return value
 
 
