@@ -56,7 +56,7 @@ def battle(player_team, enemy_list):
             
         # request user input
         if player_team[0].level == 1:
-            print("There are different commands that you can use in battle.")
+            print("There are different commands that you can use in battle. Type 'Help' for more details.")
         for p in player_team:
             p_in = input("What would you like {} to do? ".format(p.name))
             check = battle_command_checker(p_in.lower(), p, enemy_list)
@@ -280,7 +280,7 @@ def armor_event(player_team):
     """
     Runs the armor event. Generates a piece of low-level armor.
     """
-    print("You see a piece of armor lying on the ground. You pick it up.")
+    print("You see a piece of armor lying on the ground. You pick it up and put it in your backpack.")
     r = random.randint(0, 3)
     if r == 0:
         item = Item.Armor("Leather Helmet", "A leather helmet to prevent light injuries.", "Leather", "helmet", player_team)

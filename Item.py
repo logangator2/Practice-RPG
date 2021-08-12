@@ -181,6 +181,9 @@ def manage(player):
                 elif (answer.lower() == "equip") or (answer.lower() == "e"):
                     if isinstance(item, Potion):
                         print("\nThis item cannot be equipped!")
+                    # FIXME: Logic does not work, fix for usability
+                    # elif isinstance(item, Armor) and ((player.helmet or player.torso or player.leggings or player.boots) == item.name):
+                    #     print("\nYou've already equipped this item!")
                     elif isinstance(item, Armor):
                         player.equip(item)
                         time.sleep(1.5)  
@@ -190,7 +193,7 @@ def manage(player):
                     time.sleep(1.5)
                     
             else:
-                if (item == player.backpack[-1]): # FIXME: player sees this message even if item is in inventory sometimes
+                if (item == player.backpack[-1]): # FIXME: player sees this message when throwing out or equipping an item sometimes
                     print("That item isn't in your backpack!")
                     time.sleep(1.5)
     return      
